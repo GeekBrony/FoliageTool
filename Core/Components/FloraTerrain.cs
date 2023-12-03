@@ -151,8 +151,10 @@ public class FloraTerrain : MonoBehaviour
         bool modified = false;
         if (Data.detailPrototypes.Length != prototypes.Count)
         {
-            for (int i = Data.detailPrototypes.Length; i > 0; i--)
-                Data.RemoveDetailPrototype(i - 1);
+            for (int i = Data.detailPrototypes.Length - 1; i >= 0; i--)
+            {
+                Data.RemoveDetailPrototype(i);
+            }
 
             modified = true;
         }
@@ -443,11 +445,11 @@ public class FloraTerrain : MonoBehaviour
 #if FLORA_DEBUG
         long totalMs = baseRefreshTimeMs + biomeMasksMs + biomeEvalsMs + treeMapTime + treeEvalTime;
         Debug.Log(
-            $"Base refresh time: {baseRefreshTimeMs} ms\n"+
-            "BIOMES:\n"+ 
+            $"Base refresh time: {baseRefreshTimeMs} ms\n\n"+
+            "BIOMES...\n"+ 
             $"mask evaluation time: {biomeMasksMs} ms\n"+
-            $"biome evaluation time: {biomeEvalsMs} ms\n"+ 
-            "TREES:\n"+ 
+            $"biome evaluation time: {biomeEvalsMs} ms\n\n"+ 
+            "TREES...\n"+ 
             $"mask evaluation time: {treeMapTime} ms\n"+
             $"tree evaluation time: {treeEvalTime} ms\n\n"+
             $"Region total time: {totalMs} ms");
