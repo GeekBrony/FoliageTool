@@ -1,0 +1,24 @@
+{
+    "name": "team.poni.flora-foliage",
+    "version": "1.0.0-alpha",
+    "displayName": "Flora Foliage",
+    "description": "Provides an editor-only tool for artist-friendly foliage generation, which helps with iterative level design workflows.",
+    "unity": "2022.3",
+    "unityRelease": "11f1",
+    "dependencies": {
+      "com.unity.mathematics": "1.2.6",
+      "com.unity.splines": "2.4.0",
+      "com.unity.editorcoroutines": "1.0.0"
+   },
+   "keywords": [
+      "foliage",
+      "grass",
+      "flowers",
+      "flora"
+    ],
+    "author": {
+      "name": "Poni Team",
+      "email": "geekbrony@poniga.me"
+    }
+  }
+  
