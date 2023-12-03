@@ -483,17 +483,17 @@ public class FloraTerrain : MonoBehaviour
                         density = EvaluateFoliage(foliage, i, position, alphaMaps);
                 }
                 
-                switch (brush.mode)
+                switch (brush.blendMode)
                 {
-                    case FloraBrush.BrushMode.Blend:
+                    case FloraBrush.BlendMode.Blend:
                         // lerp between the current detail density and the spline's density,
                         // with the spline mask influence
                         density = Mathf.Lerp(detailMaps[i][x, y], density, brushMask[x, y]);
                         break;
-                    case FloraBrush.BrushMode.Add:
+                    case FloraBrush.BlendMode.Add:
                         density = detailMaps[i][x, y] + (density * brushMask[x, y]);
                         break;
-                    case FloraBrush.BrushMode.Subtract:
+                    case FloraBrush.BlendMode.Subtract:
                         float d = detailMaps[i][x, y] - (density * brushMask[x, y]);
                         density = Mathf.Clamp(d, 0, detailMaps[i][x, y]);
                         break;

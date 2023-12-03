@@ -12,8 +12,8 @@ public abstract class FloraBrush : MonoBehaviour
     [Range(-32, 32)]
     public int drawOrder = 0;
     
-    public enum BrushMode { Blend, Add, Subtract }
-    public BrushMode mode;
+    public enum BlendMode { Blend, Add, Subtract }
+    public BlendMode blendMode;
 
     public abstract Bounds GetBounds();
 
