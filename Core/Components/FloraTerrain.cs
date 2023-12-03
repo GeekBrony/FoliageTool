@@ -554,6 +554,13 @@ public class FloraTerrain : MonoBehaviour
     {
         if (rules.Length == 0)
             return density;
+        
+        // Check if pos.x and pos.y are within the valid range
+        Vector2Int len = new Vector2Int(alphas.GetLength(0), alphas.GetLength(1));
+        if (pos.x < 0 || pos.x >= len.x || pos.y < 0 || pos.y >= len.y)
+        {
+            pos = pos.Clamp(0, 0, len.x - 1, len.y - 1);
+        }
 
         float d = 0;
         foreach (var r in rules)
