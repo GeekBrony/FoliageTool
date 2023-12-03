@@ -75,9 +75,9 @@ namespace Flora.Core
 
             if (isMouseDown)
             {
-                _lastBounds = GetBounds();
-                
                 _mouseWasDown = true;
+                
+                _lastBounds = GetBounds();
             }
 
             if (_mouseWasDown && _brushes.Any(b => b.drawBounds))
@@ -97,6 +97,8 @@ namespace Flora.Core
             
             if (isMouseUp || (_mouseWasDown && isMouseLeft))
             {
+                _mouseWasDown = false;
+                
                 Bounds bounds = GetBounds();
                 if (bounds != _lastBounds)
                 {
@@ -118,7 +120,6 @@ namespace Flora.Core
                     }
                 }
 
-                _mouseWasDown = false;
             }
 
         }
