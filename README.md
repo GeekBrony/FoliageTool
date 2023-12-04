@@ -5,10 +5,22 @@ Artist-friendly procedural foliage generation tool, providing an iterative level
 ## Features
 
 ### Procedural Foliage
-- Flora implements **biomes**, which are assets that function as procedural rule-sets for the foliage on your terrain.
-- Flora also uses assets to reference configurations of foliage, removing the need to configure details on every terrain manually.
+
+Flora removes the need to configure and paint details on every terrain manually.
+
+#### **Custom Biomes**
+Create custom procedural rule-sets for terrain foliage.
+- Terrain Texture (Terrain Layer) Rules
+- Steepness and Height limits
+- Perlin Noise
+
+#### **Tree Filtering**
+Flora optionally filters foliage around all trees on your terrain.
+- Custom Blend Range
+- Custom Padding
 
 ### Brush Workflow
+
 To enable rapid and iterative prototyping, **brushes** are implemented as a mechanism to replace manual painting.
 
 Because brushes are GameObjects that exist in a scene, they are non-destructive by design.
@@ -16,42 +28,38 @@ Brushes are able to persist even after clearing the details on a terrain.
 
 #### Biome Brushes
 Define a biome within a configurable spline area. 
+- Create any shape using Splines.
+    - Example: Paths, Flower Beds, Crop Formations
 - Blends between other biome brushes, using `Draw Order` and `Blend Mode`
 - Custom brush falloff and alpha
 
 
 ### Native Terrain Integration
-Most foliage tools make no sense to anyone who isn't a tinkerer. If you are working with these tools, you may be navigating more menus than you need to be!
 
-Flora uses just one component to pair with Unity's default `Terrain` component.
-- It utilizes the terrain's detail system to automagically paint foliage on the terrain.
+Flora uses just one component to pair with Unity's default `Terrain` component, `FloraTerrain`.
 
-You can safely remove Flora from your terrain without losing your work.
+To keep it simple, Flora utilizes the terrain's native detail system to paint foliage on the terrain.
+
+Flora automatically bakes the details into your terrain without additional busywork. After it bakes, you can safely remove Flora from your terrain without losing your work.
 
 ---
 
 ## More Info
 
 ### What Flora is not...
-- Flora is *not* a runtime foliage generator. It is designed for use in Unity as a *step* in the level design process.
-- Flora is *not* a procedural tree generator. Instead, it works with the existing trees on your terrain.
-- Flora does *not* manage foliage instancing. This task is best left to Unity or other instancing plugins.
+- Flora is ***not*** a real-time foliage generator.
+    - It is only designed for use in the Unity Editor as a *step* in the level design process.
+- Flora is ***not*** a procedural tree generator.
+    - Instead, it works with the existing trees on your terrain.
+- Flora does ***not*** manage foliage instancing.
+    - This task is best left to Unity or other instancing plugins.
 
 ### Known Issues
-For a list of known issues, refer to our documentation. Specifically [this page](Documentation/KnownIssues.md).
-
----
+For a list of known and documented issues, [click here](Documentation/Issues.md).
 
 ## Getting Started
+For instructions on how to get started, [click here](Documentation/GettingStarted.md).
 
-### 1. Create your first Foliage
-// TODO
-
-### 2. Create your first Biome
-// TODO
-
-### 3. Add Flora to your Terrain
-// TODO
 
 ---
 ## Performance
@@ -73,37 +81,20 @@ Using a typical setup with our testing, a full refresh of one terrain can take:
 
 #### Performance Considerations
 The performance of refreshing a terrain depends on the factors listed below.
-
 > ##### Detail Resolution
-> The bigger the detail resolution, the longer it will take to refresh. Consider adjusting the `Chunked Refresh Resolution` value.
->
+> The bigger the detail resolution, the longer it will take to refresh.
+> Consider adjusting the `Chunked Refresh Resolution` value.
 > ##### Brush Count
 > The more brushes you have on a terrain, the longer it will take to refresh. More complex layering will also slow down the refresh process.
->
 > ##### Brush Size
-> When editing a brush, consider the size of the spline. Larger brushes will refresh a larger part of the terrain, which will take a longer time.
->
+> When editing a brush, consider the size of the spline.
+> Larger brushes will refresh a larger part of the terrain, which will take a longer time.
 > ##### Tree Count
 > The more trees you have on a terrain, the longer it will take to refresh.
->
 > ##### Biome and Foliage Complexity
+> These typically shouldn't matter, but if you still aren't getting good performance:
 > - Try simplifying your biomes to a max of 3 foliage assets.
 > - Remove unnecessary texture rules where needed.
 
 #### Debugging Performance
 If you are running into performance issues, add the `FLORA_DEBUG` compiler definition to measure times and print a summary of each step.
-
-Once added, this will log something like:
-```
-Base refresh time: 459 ms
-
-BIOMES...
-mask evaluation time: 54 ms
-biome evaluation time: 48 ms
-
-TREES...
-mask evaluation time: 0 ms
-tree evaluation time: 10 ms
-
-Region total time: 571 ms
-```
