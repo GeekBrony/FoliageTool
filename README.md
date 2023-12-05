@@ -6,7 +6,7 @@ Artist-friendly procedural foliage generation tool, providing an iterative terra
 
 ### Procedural Foliage
 
-Flora Studio functions as a procedural foliage painter, removing the need to configure and paint details on every terrain manually.
+Flora functions as a procedural foliage painter, removing the need to configure and paint details on every terrain manually.
 
 #### **Biomes**
 Create variation in your terrain's foliage with **biomes**.
@@ -19,7 +19,7 @@ With biomes, you are able to create custom **procedural rule-sets** for terrain 
 Additionally, it is possible to add more variation by configuring **many foliage assets** in **one biome**.
 
 #### **Tree Filtering**
-Flora Studio optionally filters foliage around all trees on your terrain.
+Flora optionally filters foliage around all trees on your terrain.
 - Custom Blend Range
 - Custom Padding
 
@@ -27,7 +27,7 @@ Flora Studio optionally filters foliage around all trees on your terrain.
 To enable rapid and iterative prototyping, **brushes** are implemented as a mechanism to replace manual painting.
 
 #### Create any shape using curves!
-Flora Studio integrates natively with [Unity Splines](https://docs.unity3d.com/Packages/com.unity.splines@2.4/manual/index.html) to allow you to create beautiful landscapes of foliage with ease.
+Flora integrates natively with [Unity Splines](https://docs.unity3d.com/Packages/com.unity.splines@2.4/manual/index.html) to allow you to create beautiful landscapes of foliage with ease.
 Create details such as paths, flowerbeds, or crop formations!
 
 #### More Power To Create!
@@ -44,33 +44,33 @@ Brushes are able to persist even after clearing the details on a terrain.
 
 ### Native Terrain Integration
 
-Flora Studio uses just one component to pair with Unity's default `Terrain` component, `Flora StudioTerrain`.
+Flora uses just one component to pair with Unity's default `Terrain` component, `FloraTerrain`.
 
-To keep it simple, Flora Studio utilizes the terrain's native detail system to paint foliage on the terrain.
+To keep it simple, Flora utilizes the terrain's native detail system to paint foliage on the terrain.
 
-Flora Studio automatically bakes the details into your terrain without additional busywork.
-After it bakes, you can safely remove Flora Studio from your terrain without losing your work.
+Flora automatically bakes the details into your terrain without additional busywork.
+After it bakes, you can safely remove Flora from your terrain without losing your work.
 
 ---
 
 ## More Info
 
-### What Flora Studio is not...
-- Flora Studio is ***not*** a real-time foliage generator.
+### What Flora is not...
+- Flora is ***not*** a real-time foliage generator.
     - It is only designed for use in the Unity Editor as a *step* in the level design process.
-- Flora Studio is ***not*** a procedural tree generator.
+- Flora is ***not*** a procedural tree generator.
     - Instead, it works with the existing trees on your terrain.
-- Flora Studio does ***not*** manage foliage instancing.
+- Flora does ***not*** manage foliage instancing.
     - This task is best left to Unity or other instancing plugins.
 
 ### Installing
-For instructions on how to install Flora Studio as a package, [click here](Documentation/Installing.md).
+For instructions on how to install Flora as a package, [click here](Documentation/Installing.md).
 
 ### Getting Started
-For instructions on how to begin creating with Flora Studio, [click here](Documentation/GettingStarted.md).
+For instructions on how to begin creating with Flora, [click here](Documentation/GettingStarted.md).
 
 ### Issues
-For a list of Flora Studio's known and documented issues, [click here](Documentation/Issues.md).
+For a list of Flora's known and documented issues, [click here](Documentation/Issues.md).
 
 ### Performance
-For more details about the performance of Flora Studio, [click here](Documentation/Performance.md).
+For more details about the performance of Flora, [click here](Documentation/Performance.md).
