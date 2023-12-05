@@ -1,6 +1,6 @@
 # Flora: Procedural Foliage
 
-Artist-friendly procedural foliage generation tool, providing an iterative terrain workflow in the Unity Editor.
+Artist-friendly procedural foliage generation tool, providing an easy-to-use foliage workflow in the Unity Editor.
 
 ## Features
 
@@ -19,9 +19,9 @@ With biomes, you are able to create custom **procedural rule-sets** for terrain 
 Additionally, it is possible to add more variation by configuring **many foliage assets** in **one biome**.
 
 #### **Tree Filtering**
-Flora optionally filters foliage around all trees on your terrain.
-- Custom Blend Range
-- Custom Padding
+Flora optionally removes foliage around all trees on your terrain.
+- Custom blend range to softly fade around trees.
+- Custom padding size around trees.
 
 ### Brush Workflow
 To enable rapid and iterative prototyping, **brushes** are implemented as a mechanism to replace manual painting.
@@ -30,7 +30,7 @@ To enable rapid and iterative prototyping, **brushes** are implemented as a mech
 Flora integrates natively with [Unity Splines](https://docs.unity3d.com/Packages/com.unity.splines@2.4/manual/index.html) to allow you to create beautiful landscapes of foliage with ease.
 Create details such as paths, flowerbeds, or crop formations!
 
-#### More Power To Create!
+#### More Power to Create!!!
 - **Brush Layering**
     - Supports **up to 64 brushes** on top of each other.
 - **Brush Blending**
