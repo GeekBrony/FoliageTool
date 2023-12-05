@@ -1,4 +1,4 @@
-## Getting Started
+# Getting Started
 
 ### 1. Create your first Foliage
 // TODO
