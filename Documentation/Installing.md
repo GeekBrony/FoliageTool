@@ -19,7 +19,7 @@ Add the following registry to your `Packages/manifest.json` file:
 Once Unity finds the scoped registries, you may proceed onto installing the package.
 
 ### Automatic Installation through UPM (Recommended)
-In Package Manager, you should find `Flora: Procedural Foliage` in Scoped Packages. Click to view, and install.
+In Package Manager, you should find `Foliage Tool` in Scoped Packages. Click to view, and install.
 Unity should then fetch the package and install it.
 
 ### Manual Installation through UPM
@@ -41,7 +41,7 @@ Clone the repository into your Unity project's `Packages` folder.
 ```bash
 cd Packages/
 git clone https://git.poniga.me/GeekBrony/FoliageTool.git
-mv FloraFoliage/ team.poni.foliage-tool/
+mv FoliageTool/ team.poni.foliage-tool/
 ```
 The commands above clone the repository into a folder with the name of the package.
 
