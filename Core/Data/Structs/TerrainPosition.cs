@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Flora.Core
+namespace FoliageTool.Core
 {
     /// <summary>
     /// Helper struct to determine the terrain position given an x and y coordinate within a region, and translate it to positions on alphamap, heightmap, terrain, and world.
@@ -39,22 +39,17 @@ namespace Flora.Core
             
             // position in detail space
             DetailPosition = new Vector2Int(x, y);
-            
             // position in normalized REGION space
             RegionPosition2D = new Vector2(x, y) / data.detailResolution;
-            
             // position in normalized TERRAIN space
             TerrainPosition2D = (detailRegion.position + new Vector2(x, y)) / data.detailResolution;
             
             Vector2 alphaPos = RegionPosition2D * data.alphamapResolution;
             AlphaPosition = Vector2Int.FloorToInt(alphaPos);
-            
             HeightPosition = Vector2Int.FloorToInt(RegionPosition2D * data.heightmapResolution);
-
             // position in world space
             WorldPosition2D = new Vector2(worldRegion.position.y, worldRegion.position.x) +
                               (RegionPosition2D * new Vector2(data.size.x, data.size.z));
-            
             WorldPosition3D = new Vector3(WorldPosition2D.x, 0, WorldPosition2D.y);
         }
     }

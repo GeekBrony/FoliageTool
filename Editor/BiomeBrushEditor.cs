@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Flora.Core.Brushes;
 using UnityEditor;
 using UnityEngine;
 
-namespace Flora.Core
+namespace FoliageTool.Core
 {
     [CustomEditor(typeof(BiomeBrush)), CanEditMultipleObjects]
     public class BiomeBrushEditor : Editor
@@ -21,43 +20,35 @@ namespace Flora.Core
             _lastBounds = _biome.GetBounds();
         }
         
-        /*void OnGUI () {
-            DragAndDrop.visualMode = DragAndDropVisualMode.Generic;
-            if (Event.current.type == EventType.DragExited) {
-                _dragBrushes = new BiomeBrush[DragAndDrop.objectReferences.Length];
-                for (int i = 0; i < DragAndDrop.objectReferences.Length; i++) {
-                    _dragBrushes[i] = DragAndDrop.objectReferences[i] as BiomeBrush;
-                }
-                foreach (var b in _dragBrushes)
-                {
-                    if(!_isSpawned) b.Refresh(b.GetBounds());
-                }
-                
-            }
-        }*/
         private BiomeBrush[] _brushes;
+        
+        private static readonly string[] _dontIncludeMe = new string[]{"m_Script"};
+        private bool IsPlaying => EditorApplication.isPlaying;
+        
         public override void OnInspectorGUI()
         {
-            bool modified = DrawDefaultInspector();
-
-            if (EditorApplication.isPlaying)
-                return;
-
+            serializedObject.Update();
+            
             _brushes = GetTargets();
             
-            if (modified)
+            if (GUILayout.Button("Refresh") && !IsPlaying)
             {
+                foreach (var brush in _brushes)
+                    brush.Refresh(brush.GetBounds());
+            }
+            EditorGUI.BeginChangeCheck();
+            DrawPropertiesExcluding(serializedObject, _dontIncludeMe);
+            serializedObject.ApplyModifiedProperties();
+            
+            if (EditorGUI.EndChangeCheck())
+            {
+                if (IsPlaying)
+                    return;
+                
                 foreach (var brush in _brushes)
                     brush.ScheduleRefresh();
             }
 
-            if (GUILayout.Button("Refresh"))
-            {
-                foreach (var brush in _brushes)
-                {
-                    brush.Refresh(brush.GetBounds());
-                }
-            }
         }
 
         private bool _mouseWasDown = false;
