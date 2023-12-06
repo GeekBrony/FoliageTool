@@ -5,7 +5,7 @@ using UnityEditor.TerrainTools;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace Flora.Core
+namespace FoliageTool.Core
 {
     [CustomEditor(typeof(FoliageAsset))]
     public class FoliageAssetEditor : Editor

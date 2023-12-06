@@ -2,13 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using Flora.Core;
-using Flora.Core.Brushes;
-using Flora.Utils;
+using FoliageTool.Core;
+using FoliageTool.Utils;
 using Unity.Mathematics;
 using UnityEngine;
 
-#if FLORA_DEBUG
+#if FOLIAGE_DEBUG
 using Debug = UnityEngine.Debug;
 #endif
 
@@ -18,9 +17,10 @@ using UnityEditor;
 
 [RequireComponent(typeof(Terrain))]
 [ExecuteInEditMode]
-public class FloraTerrain : MonoBehaviour
+public class FoliageTerrain : MonoBehaviour
 {
-    [HideInInspector] public Terrain terrain;
+    [HideInInspector]
+    public Terrain terrain;
     private TerrainData Data => terrain.terrainData;
     public BiomeAsset biome;
 
@@ -47,7 +47,7 @@ public class FloraTerrain : MonoBehaviour
     [Tooltip("Past this resolution, the refresh action will divide the terrain into sections for refreshing.")]
     public int chunkedRefreshResolution = 256;
     
-    public static IEnumerator Refresh(FloraTerrain component)
+    public static IEnumerator Refresh(FoliageTerrain component)
     {
         var terrain = component.terrain;
         int divisions = math.clamp(terrain.terrainData.detailResolution / component.chunkedRefreshResolution, 1, 16);
@@ -79,14 +79,18 @@ public class FloraTerrain : MonoBehaviour
 
     private void OnEnable()
     {
+#if UNITY_EDITOR
         TerrainCallbacks.textureChanged += OnTextureChanged;
         TerrainCallbacks.heightmapChanged += OnHeightChanged;
+#endif
     }
 
     private void OnDisable()
     {
+#if UNITY_EDITOR
         TerrainCallbacks.textureChanged -= OnTextureChanged;
         TerrainCallbacks.heightmapChanged -= OnHeightChanged;
+#endif
     }
 
     private void OnValidate()
@@ -319,7 +323,7 @@ public class FloraTerrain : MonoBehaviour
         for (int i = 0; i < detailMaps.Length; ++i)
             detailMaps[i] = new int[detailRegion.width, detailRegion.height];
 
-#if FLORA_DEBUG
+#if FOLIAGE_DEBUG
         long baseRefreshTimeMs = 0;
         long treeEvalTime = 0;
         long treeMapTime = 0;
@@ -334,7 +338,7 @@ public class FloraTerrain : MonoBehaviour
         
         float[,] treeMap = BuildTreeMap(region);
         
-#if FLORA_DEBUG
+#if FOLIAGE_DEBUG
         timer.Stop();
         treeMapTime = timer.ElapsedMilliseconds;
         timer.Reset();
@@ -368,7 +372,7 @@ public class FloraTerrain : MonoBehaviour
             }
         }
         
-#if FLORA_DEBUG
+#if FOLIAGE_DEBUG
         timer.Stop();
         baseRefreshTimeMs = timer.ElapsedMilliseconds;
         timer.Reset();
@@ -378,13 +382,13 @@ public class FloraTerrain : MonoBehaviour
         {
             BiomeBrush[] brushes = BiomeBrush.GetSplines(terrain).ToArray();
             
-#if FLORA_DEBUG
+#if FOLIAGE_DEBUG
             timer.Start();
 #endif
             
             float[][,] biomeMasks = GetBiomeMasks(brushes, region);
             
-#if FLORA_DEBUG
+#if FOLIAGE_DEBUG
             timer.Stop();
             biomeMasksMs = timer.ElapsedMilliseconds;
             timer.Reset();
@@ -402,7 +406,7 @@ public class FloraTerrain : MonoBehaviour
                 }
             }
             
-#if FLORA_DEBUG
+#if FOLIAGE_DEBUG
             timer.Stop();
             biomeEvalsMs = timer.ElapsedMilliseconds;
             timer.Reset();
@@ -412,7 +416,7 @@ public class FloraTerrain : MonoBehaviour
 
         if (evaluateTrees)
         {
-#if FLORA_DEBUG
+#if FOLIAGE_DEBUG
             timer.Start();
 #endif
             for (int y = 0; y < detailRegion.height; y++)
@@ -428,7 +432,7 @@ public class FloraTerrain : MonoBehaviour
                     }
                 }
             }
-#if FLORA_DEBUG
+#if FOLIAGE_DEBUG
             timer.Stop();
             treeEvalTime = timer.ElapsedMilliseconds;
             timer.Reset();
@@ -442,7 +446,7 @@ public class FloraTerrain : MonoBehaviour
         for (int i = 0; i < detailMaps.Length; ++i)
             Data.SetDetailLayer(region.DetailRegion.position, i, detailMaps[i]);
         
-#if FLORA_DEBUG
+#if FOLIAGE_DEBUG
         long totalMs = baseRefreshTimeMs + biomeMasksMs + biomeEvalsMs + treeMapTime + treeEvalTime;
         Debug.Log(
             $"Base refresh time: {baseRefreshTimeMs} ms\n\n"+
@@ -487,15 +491,15 @@ public class FloraTerrain : MonoBehaviour
                 
                 switch (brush.blendMode)
                 {
-                    case FloraBrush.BlendMode.Blend:
+                    case Brush.BlendMode.Blend:
                         // lerp between the current detail density and the spline's density,
                         // with the spline mask influence
                         density = Mathf.Lerp(detailMaps[i][x, y], density, brushMask[x, y]);
                         break;
-                    case FloraBrush.BlendMode.Add:
+                    case Brush.BlendMode.Add:
                         density = detailMaps[i][x, y] + (density * brushMask[x, y]);
                         break;
-                    case FloraBrush.BlendMode.Subtract:
+                    case Brush.BlendMode.Subtract:
                         float d = detailMaps[i][x, y] - (density * brushMask[x, y]);
                         density = Mathf.Clamp(d, 0, detailMaps[i][x, y]);
                         break;

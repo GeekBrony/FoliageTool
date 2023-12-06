@@ -1,8 +1,8 @@
-﻿using Flora.Utils;
+﻿using FoliageTool.Utils;
 using UnityEditor;
 using UnityEngine;
 
-namespace Flora.Core
+namespace FoliageTool.Core
 {
     [CustomPropertyDrawer(typeof(PerlinNoise))]
     public class PerlinNoiseDrawer : PropertyDrawer

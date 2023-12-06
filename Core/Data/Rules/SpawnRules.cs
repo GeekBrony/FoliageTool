@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Flora.Utils;
+using FoliageTool.Utils;
 using UnityEngine;
 
-namespace Flora.Core
+namespace FoliageTool.Core
 {
     [Serializable]
     public class SpawnRules

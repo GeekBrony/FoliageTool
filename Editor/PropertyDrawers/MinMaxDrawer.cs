@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEditor;
 
-namespace Flora.Utils
+namespace FoliageTool.Utils
 {
     [CustomPropertyDrawer(typeof(MinMaxAttribute))]
     internal class MinMaxDrawer : PropertyDrawer

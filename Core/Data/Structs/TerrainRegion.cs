@@ -1,7 +1,7 @@
-﻿using Flora.Utils;
+﻿using FoliageTool.Utils;
 using UnityEngine;
 
-namespace Flora.Core
+namespace FoliageTool.Core
 {
     /// <summary>
     /// Helper struct to define a terrain's region.

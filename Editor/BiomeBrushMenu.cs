@@ -1,13 +1,12 @@
-﻿using Flora.Core.Brushes;
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEngine;
 using UnityEngine.Splines;
 
-namespace Flora.Core
+namespace FoliageTool.Core
 {
     public static class BiomeBrushMenu
     {
-        [MenuItem("GameObject/Flora/Biome Brush/Circle", false, 10)]
+        [MenuItem("GameObject/Foliage/Biome Brush/Circle", false, 10)]
         static void NewBrushCircle(MenuCommand menuCommand)
         {
             GameObject go = new GameObject("Biome Brush", typeof(SplineContainer), typeof(BiomeBrush));
@@ -39,7 +38,7 @@ namespace Flora.Core
             Selection.activeObject = go;
         }
         
-        [MenuItem("GameObject/Flora/Biome Brush/Square", false, 10)]
+        [MenuItem("GameObject/Foliage/Biome Brush/Square", false, 10)]
         static void NewBrushSquare(MenuCommand menuCommand)
         {
             GameObject go = new GameObject("Biome Brush", typeof(SplineContainer), typeof(BiomeBrush));
@@ -70,7 +69,7 @@ namespace Flora.Core
             Selection.activeObject = go;
         }
         
-        [MenuItem("GameObject/Flora/Biome Brush/Square (Rounded)", false, 10)]
+        [MenuItem("GameObject/Foliage/Biome Brush/Square (Rounded)", false, 10)]
         static void NewBrushSquareRounded(MenuCommand menuCommand)
         {
             GameObject go = new GameObject("Biome Brush", typeof(SplineContainer), typeof(BiomeBrush));

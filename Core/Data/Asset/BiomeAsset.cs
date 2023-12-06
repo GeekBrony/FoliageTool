@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace Flora.Core
+namespace FoliageTool.Core
 {
     [CreateAssetMenu(fileName = "Biome", menuName = "Flora/Biome", order = 0)]
     public class BiomeAsset : ScriptableObject

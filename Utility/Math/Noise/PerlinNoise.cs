@@ -4,7 +4,7 @@ using System.ComponentModel;
 using Unity.Mathematics;
 using UnityEngine;
 
-namespace Flora.Utils
+namespace FoliageTool.Utils
 {
     [Serializable]
     public struct PerlinNoise

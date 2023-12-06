@@ -4,7 +4,7 @@ using UnityEditor;
 using UnityEditor.TerrainTools;
 using UnityEngine;
 
-namespace Flora.Core
+namespace FoliageTool.Core
 {
     [CustomEditor(typeof(BiomeAsset))]
     public class BiomeAssetEditor : Editor

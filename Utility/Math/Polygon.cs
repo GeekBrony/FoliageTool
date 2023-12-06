@@ -18,7 +18,7 @@ using System.Collections;
 using Unity.Mathematics;
 using UnityEngine;
 
-namespace Flora.Utils
+namespace FoliageTool.Utils
 {
     public struct Polygon
     {

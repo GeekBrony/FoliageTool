@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-namespace Flora.Utils
+namespace FoliageTool.Utils
 {
     public static class LayerExtensions
     {

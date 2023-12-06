@@ -1,24 +1,24 @@
 {
-    "name": "team.poni.tools.flora-foliage",
-    "version": "1.0.0-alpha",
-    "displayName": "Flora: Procedural Foliage",
-    "description": "Artist-friendly procedural foliage generation tool, allowing an iterative level design workflow for terrain foliage.",
-    "unity": "2022.3",
-    "unityRelease": "0f1",
-    "dependencies": {
-      "com.unity.mathematics": "1.2.6",
-      "com.unity.splines": "2.4.0",
-      "com.unity.editorcoroutines": "1.0.0"
-   },
-   "keywords": [
-      "foliage",
-      "grass",
-      "flowers",
-      "flora"
-    ],
-    "author": {
-      "name": "Poni Team",
-      "email": "geekbrony@poniga.me"
-    }
+  "name": "team.poni.foliage-tool",
+  "version": "1.0.0",
+  "displayName": "Foliage Tool",
+  "description": "Artist-friendly procedural foliage generation tool for the Unity Editor.\nEnables rapid prototyping using a non-destructive foliage workflow.",
+  "unity": "2022.3",
+  "unityRelease": "0f1",
+  "dependencies": {
+    "com.unity.mathematics": "1.2.6",
+    "com.unity.splines": "2.4.0",
+    "com.unity.editorcoroutines": "1.0.0"
+  },
+  "keywords": [
+    "foliage",
+    "grass",
+    "flowers",
+    "flora",
+    "tool"
+  ],
+  "author": {
+    "name": "Poni Team",
+    "email": "geekbrony@poniga.me"
   }
-  
+}

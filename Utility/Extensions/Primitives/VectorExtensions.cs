@@ -2,7 +2,7 @@
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-namespace Flora.Utils
+namespace FoliageTool.Utils
 {
     public static class VectorExtensions
     {

@@ -1,24 +1,23 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Flora.Core.Brushes;
 using Unity.EditorCoroutines.Editor;
 using Unity.Mathematics;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace Flora.Core
+namespace FoliageTool.Core
 {
-    [CustomEditor(typeof(FloraTerrain)), CanEditMultipleObjects]
-    public class FloraTerrainEditor : Editor
+    [CustomEditor(typeof(FoliageTerrain)), CanEditMultipleObjects]
+    public class FoliageTerrainEditor : Editor
     {
-        private FloraTerrain _fTerrain;
+        private FoliageTerrain _tComponent;
         private void OnEnable()
         {
-            _fTerrain = target as FloraTerrain;
+            _tComponent = target as FoliageTerrain;
             
-            List<FloraTerrain> terrains = GetSelectedFloraTerrains();
+            List<FoliageTerrain> terrains = GetSelectedFloraTerrains();
             RefreshStats(terrains.ToArray());
         }
 
@@ -35,7 +34,7 @@ namespace Flora.Core
         List<TreePrototype> treePrototypes = new List<TreePrototype>();
         int treeInstances = 0;
 
-        void RefreshStats(params FloraTerrain[] terrains)
+        void RefreshStats(params FoliageTerrain[] terrains)
         {
             brushes.Clear();
             biomes.Clear();
@@ -43,7 +42,7 @@ namespace Flora.Core
             treePrototypes.Clear();
             treeInstances = 0;
                 
-            foreach (FloraTerrain f in terrains)
+            foreach (FoliageTerrain f in terrains)
             {
                 Terrain terrain = f.terrain;
                 TerrainData data = terrain.terrainData;
@@ -87,7 +86,7 @@ namespace Flora.Core
         private static bool _showStatistics = false;
         public override void OnInspectorGUI()
         {
-            List<FloraTerrain> terrains = GetSelectedFloraTerrains();
+            List<FoliageTerrain> terrains = GetSelectedFloraTerrains();
             
             EditorGUILayout.Space(2);
             EditorGUILayout.BeginHorizontal();
@@ -98,7 +97,7 @@ namespace Flora.Core
                     "Are you sure you want to remove all foliage on this terrain?", "Yes", "No");
                 if (action)
                 {
-                    foreach (FloraTerrain t in terrains)
+                    foreach (FoliageTerrain t in terrains)
                     {
                         if(!t) continue;
                         
@@ -113,7 +112,7 @@ namespace Flora.Core
 
             if (GUILayout.Button("Sync", _buttonLayout))
             {
-                foreach (FloraTerrain t in terrains)
+                foreach (FoliageTerrain t in terrains)
                 {
                     if(!t) continue;
                     
@@ -158,26 +157,26 @@ namespace Flora.Core
             EditorGUILayout.EndFoldoutHeaderGroup();
         }
 
-        IEnumerator Refresh(params FloraTerrain[] terrains)
+        IEnumerator Refresh(params FoliageTerrain[] terrains)
         {
-            foreach (FloraTerrain t in terrains)
+            foreach (FoliageTerrain t in terrains)
             {
                 yield return null;
                 if(!t)
                     continue;
 
-                yield return EditorCoroutineUtility.StartCoroutine(FloraTerrain.Refresh(t), this);
+                yield return EditorCoroutineUtility.StartCoroutine(FoliageTerrain.Refresh(t), this);
             }
         }
 
-        List<FloraTerrain> GetSelectedFloraTerrains()
+        List<FoliageTerrain> GetSelectedFloraTerrains()
         {
-            List<FloraTerrain> list = new List<FloraTerrain>();
+            List<FoliageTerrain> list = new List<FoliageTerrain>();
             foreach (Object o in targets)
             {
                 if(!o) continue;
                     
-                FloraTerrain t = o as FloraTerrain;
+                FoliageTerrain t = o as FoliageTerrain;
                 if (t)
                 {
                     list.Add(t);

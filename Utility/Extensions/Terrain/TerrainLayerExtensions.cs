@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Flora.Utils
+namespace FoliageTool.Utils
 {
     public static class TerrainLayerExtensions
     {

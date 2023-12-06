@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace Flora.Utils
+namespace FoliageTool.Utils
 {
     /// <summary>
     /// Attribute to select a range of floats in Vector2

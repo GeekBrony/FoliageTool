@@ -33,4 +33,4 @@ The performance of refreshing a terrain depends on the factors listed below.
 > - Remove unnecessary texture rules where needed.
 
 ### Debugging Performance
-If you are running into performance issues, add the `FLORA_DEBUG` compiler definition to measure times and print a summary of each step.
+If you are running into performance issues, add the `FOLIAGE_DEBUG` compiler definition to measure times and print a summary of each step.

@@ -1,8 +1,8 @@
 ﻿using System;
-using Flora.Utils;
+using FoliageTool.Utils;
 using UnityEngine;
 
-namespace Flora.Core
+namespace FoliageTool.Core
 {
     [CreateAssetMenu(menuName = "Flora/Foliage", fileName = "Foliage", order = -100)]
     public class FoliageAsset : ScriptableObject

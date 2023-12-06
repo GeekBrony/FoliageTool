@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
-using Flora.Core;
+using FoliageTool.Core;
 using Unity.Mathematics;
 using UnityEngine;
 
-namespace Flora.Utils
+namespace FoliageTool.Utils
 {
     public static class TerrainDataExtensions
     {

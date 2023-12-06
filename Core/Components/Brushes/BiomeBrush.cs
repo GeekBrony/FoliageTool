@@ -1,17 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Flora.Utils;
+using FoliageTool.Utils;
 using Unity.Mathematics;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Splines;
 
-namespace Flora.Core.Brushes
+namespace FoliageTool.Core
 {
     [ExecuteInEditMode]
     [RequireComponent(typeof(SplineContainer))]
-    public class BiomeBrush : FloraBrush
+    public class BiomeBrush : Brush
     {
         [HideInInspector]
         public SplineContainer spline;
@@ -180,7 +180,7 @@ namespace Flora.Core.Brushes
 
         public void Refresh(Bounds bounds)
         {
-            foreach (FloraTerrain terrain in FindObjectsOfType<FloraTerrain>())
+            foreach (FoliageTerrain terrain in FindObjectsOfType<FoliageTerrain>())
             {
                 if(!Intersects(terrain.terrain))
                     continue;
