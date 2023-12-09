@@ -5,7 +5,7 @@
 Clone the repository into your Unity project's `Packages` folder.
 ```bash
 cd Packages/
-git clone https://git.poniga.me/GeekBrony/FoliageTool.git
+git clone https://github.com/GeekBrony/FoliageTool.git
 mv FoliageTool/ team.poni.foliage-tool/
 ```
 The commands above clone the repository into a folder with the name of the package.
