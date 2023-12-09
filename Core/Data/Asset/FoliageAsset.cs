@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace FoliageTool.Core
 {
-    [CreateAssetMenu(menuName = "Flora/Foliage", fileName = "Foliage", order = -100)]
+    [CreateAssetMenu(menuName = "FoliageTool/Foliage", fileName = "Foliage", order = 10000)]
     public class FoliageAsset : ScriptableObject
     {
         [Header("Prototype")]

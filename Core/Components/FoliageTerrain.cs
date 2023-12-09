@@ -44,7 +44,7 @@ public class FoliageTerrain : MonoBehaviour
     [Range(0, 16)] public int treePadding = 4;
     
     [Header("Other")]
-    [Tooltip("Past this resolution, the refresh action will divide the terrain into sections for refreshing.")]
+    [Tooltip("Past this resolution, the refresh action will divide the terrain into sections for refreshing. This only happens during full refreshes.")]
     public int chunkedRefreshResolution = 256;
     
     public static IEnumerator Refresh(FoliageTerrain component)
@@ -134,8 +134,8 @@ public class FoliageTerrain : MonoBehaviour
         
         return biomes.ToArray();
     }
-
-    public bool SyncFoliage(out DetailPrototype[] detailPrototypes)
+    
+    public void SyncFoliage(out DetailPrototype[] detailPrototypes)
     {
         List<DetailPrototype> prototypes = new List<DetailPrototype>();
         foreach (BiomeAsset biomeAsset in GetBiomes())
@@ -150,24 +150,25 @@ public class FoliageTerrain : MonoBehaviour
                 prototypes.Add(prototype);
             }
         }
-
+        
         // Only remove all foliage on this terrain if lengths aren't equal.
-        bool modified = false;
         if (Data.detailPrototypes.Length != prototypes.Count)
         {
+            // BUG: On Modify Brush - All details removed outside of the brush
+            // This happens when Data.detailPrototypes.Length is not equal to prototypes.Count
+            // Primarily happens when a brush adds foliage that was not previously on the terrain
+            // TODO: Fix lol
+            
             for (int i = Data.detailPrototypes.Length - 1; i >= 0; i--)
             {
                 Data.RemoveDetailPrototype(i);
             }
-
-            modified = true;
         }
 
         Data.detailPrototypes = prototypes.ToArray();
         Data.RefreshPrototypes();
 
         detailPrototypes = prototypes.ToArray();
-        return modified;
     }
 
     public float[][,] GetBiomeMasks(BiomeBrush[] brushes, TerrainRegion region)
@@ -309,12 +310,7 @@ public class FoliageTerrain : MonoBehaviour
         RectInt detailRegion = region.DetailRegion;
 
         // sync all detail prototypes with the terrain
-        bool modified = SyncFoliage(out DetailPrototype[] detailPrototypes);
-        /*if (modified)
-        {
-            // Refresh entire terrain
-            return;
-        }*/
+        SyncFoliage(out DetailPrototype[] detailPrototypes);
 
         // get all maps
         float[,,] alphaMaps = Data.GetAlphamaps(alphaRegion.position, alphaRegion.size);
@@ -514,7 +510,7 @@ public class FoliageTerrain : MonoBehaviour
     {
         RectInt detailRegion = region.DetailRegion;
 
-        bool modified = SyncFoliage(out DetailPrototype[] foliage);
+        SyncFoliage(out DetailPrototype[] foliage);
 
         for (int i = 0; i < foliage.Length; ++i)
             Data.SetDetailLayer(detailRegion.position, i, new int[detailRegion.width, detailRegion.height]);

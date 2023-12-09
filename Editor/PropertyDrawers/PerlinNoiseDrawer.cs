@@ -13,7 +13,7 @@ namespace FoliageTool.Core
         const int k_CardPreviewOffset = 5;
 
         private const int NoiseResolution = 100;
-        private const int ScaleRes = NoiseResolution / 4;
+        private const int ScaleRes = NoiseResolution / 5;
         
         private bool _expanded = false;
         private bool _advancedExpanded = false;

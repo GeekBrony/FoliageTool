@@ -7,20 +7,20 @@ namespace FoliageTool.Core
     [Serializable]
     public class Foliage
     {
-        public FoliageAsset asset;
         public bool bypass;
+        public FoliageAsset asset;
         
         [Range(0, 4)]
+        [Tooltip("Density of the foliage on the terrain.")]
         public float density = 1;
+        
         [Space(10)]
+        [Tooltip("The procedural rules for this foliage.")]
         public SpawnRules spawnRules;
 
         public Foliage()
         {
-            spawnRules = new SpawnRules()
-            {
-                textureRules = new List<TextureRule>()
-            };
+            spawnRules = new SpawnRules() { textureRules = new List<TextureRule>() };
         }
         
         public Foliage Clone()

@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace FoliageTool.Core
 {
-    [CreateAssetMenu(fileName = "Biome", menuName = "Flora/Biome", order = 0)]
+    [CreateAssetMenu(fileName = "Biome", menuName = "FoliageTool/Biome", order = 10011)]
     public class BiomeAsset : ScriptableObject
     {
         public List<Foliage> foliage = new List<Foliage>();
