@@ -16,7 +16,7 @@ With biomes, you are able to create custom **procedural rule-sets** for terrain 
 
 Additionally, it is possible to add more variation by configuring **many foliage assets** in **one biome**.
 
-#### **Tree Filtering**
+#### **Tree Avoidance**
 To prevent overlapping, FoliageTool optionally removes foliage around all trees on your terrain.
 - Custom blend range to softly fade around trees.
 - Custom padding size around trees.
