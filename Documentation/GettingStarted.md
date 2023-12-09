@@ -38,12 +38,13 @@ FoliageTool allows you to store foliage configurations as a `FoliageAsset`.
 ## Getting Started with Biome Brushes
 
 ### 1. Creating a Biome Brush
+1. Create a biome brush object: `GameObject > Foliage > Biome Brush > Circle`
+2. You should see a circle brush created in front of your camera.
+    > ![Biome Brush](_Images/biomebrush_scene01.jpg)
+3. In the Inspector, you should see the Biome Brush component.
+    > ![Biome Brush](_Images/biomebrush_inspector.png)
+
+### 2. Assign a biome!
 1. Using another foliage asset, create another biome.
-2. Create a biome brush object: `GameObject > Foliage > Biome Brush > Circle`
-3. A biome brush GameObject should be created in front of your camera.
-
-In the Inspector, you should see the Biome Brush component.
-This is what it should look like:
-
-![Biome Brush](_Images/biomebrush_inspector.png)
-
+2. Assign the newly-created biome by dragging it into the `Biome` field of the Biome Brush.
+    > ![Biome Brush](_Images/biomebrush_scene02.jpg)
