@@ -359,7 +359,7 @@ public class FoliageTerrain : MonoBehaviour
                     if (foliage == null)
                         continue;
                     
-                    if(foliage.bypass)
+                    if(foliage.disable)
                         continue;
 
                     // Set the density to the result of the evaluation
@@ -481,7 +481,7 @@ public class FoliageTerrain : MonoBehaviour
                 if (brush.biome)
                 {
                     Foliage foliage = brush.biome.GetFoliage(prototype);
-                    if (foliage != null && !foliage.bypass)
+                    if (foliage != null && !foliage.disable)
                         density = EvaluateFoliage(foliage, i, position, alphaMaps);
                 }
                 
