@@ -42,7 +42,7 @@ namespace FoliageTool.Core
 
         public TextureRule[] GetTextureRules()
         {
-            return textureRules.Where(t => !t.bypass).ToArray();
+            return textureRules.Where(t => !t.disable).ToArray();
         }
         
 

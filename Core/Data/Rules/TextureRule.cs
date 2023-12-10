@@ -1,20 +1,25 @@
 ﻿using System;
 using UnityEngine;
+using UnityEngine.Serialization;
 
-[Serializable]
-public struct TextureRule
+namespace FoliageTool.Core
 {
-    [Tooltip("Check to disable this rule")]
-    public bool bypass;
+    [Serializable]
+    public struct TextureRule
+    {
+        [FormerlySerializedAs("bypass")]
+        [Tooltip("Check to disable this rule")]
+        public bool disable;
     
-    [Tooltip("The terrain texture to check for")]
-    public TerrainLayer layer;
+        [Tooltip("The terrain texture to check for")]
+        public TerrainLayer layer;
     
-    public enum Rule { Include, Exclude }
-    [Tooltip("Include or exclude foliage from this texture")]
-    public Rule rule;
+        public enum Rule { Include, Exclude }
+        [Tooltip("Include or exclude foliage from this texture")]
+        public Rule rule;
     
-    [Range(0, 1)]
-    [Tooltip("The texture threshold at which this rule will be applied")]
-    public float threshold;
+        [Range(0, 1)]
+        [Tooltip("The texture threshold at which this rule will be applied")]
+        public float threshold;
+    }
 }
