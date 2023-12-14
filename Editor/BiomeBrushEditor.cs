@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.EditorCoroutines.Editor;
 using UnityEditor;
 using UnityEngine;
 
@@ -11,6 +13,7 @@ namespace FoliageTool.Core
     {
         private BiomeBrush _biome;
         private BiomeBrush[] _dragBrushes;
+        private FoliageTerrain[] _terrains;
         private void OnEnable()
         {
             _biome = target as BiomeBrush;
@@ -18,6 +21,7 @@ namespace FoliageTool.Core
                 return;
             
             _lastBounds = _biome.GetBounds();
+            _terrains = FindObjectsOfType<FoliageTerrain>();
         }
         
         private BiomeBrush[] _brushes;
@@ -33,9 +37,9 @@ namespace FoliageTool.Core
             
             if (GUILayout.Button("Refresh") && !IsPlaying)
             {
-                foreach (var brush in _brushes)
-                    brush.Refresh(brush.GetBounds());
+                EditorCoroutineUtility.StartCoroutine(Refresh(_brushes, _terrains), this);
             }
+            
             EditorGUI.BeginChangeCheck();
             DrawPropertiesExcluding(serializedObject, _dontIncludeMe);
             serializedObject.ApplyModifiedProperties();
@@ -49,6 +53,51 @@ namespace FoliageTool.Core
                     brush.ScheduleRefresh();
             }
 
+        }
+        
+        IEnumerator Refresh(Bounds bounds, params FoliageTerrain[] terrains)
+        {
+            foreach (FoliageTerrain t in terrains)
+            {
+                if(!t) continue;
+
+                var region = TerrainRegion.FromBounds(t.terrain, bounds, 10);
+                    
+                if (region.DetailRegion.width <= t.refreshOptions.maxChunkResolution &&
+                    region.DetailRegion.height <= t.refreshOptions.maxChunkResolution)
+                {
+                    t.Refresh(region);
+                    continue;
+                }
+                
+                yield return EditorCoroutineUtility.StartCoroutine(
+                    FoliageTerrain.Refresh(t, region), this);
+            }
+            
+            
+        }
+        
+        IEnumerator Refresh(BiomeBrush[] brushes, params FoliageTerrain[] terrains)
+        {
+            foreach (FoliageTerrain t in terrains)
+            {
+                if(!t) continue;
+
+                foreach (var brush in brushes)
+                {
+                    var region = TerrainRegion.FromBounds(t.terrain, brush.GetBounds(), 10);
+                    
+                    if (region.DetailRegion.width <= t.refreshOptions.maxChunkResolution &&
+                        region.DetailRegion.height <= t.refreshOptions.maxChunkResolution)
+                    {
+                        t.Refresh(region);
+                        continue;
+                    }
+                    
+                    yield return EditorCoroutineUtility.StartCoroutine(
+                        FoliageTerrain.Refresh(t, region), this);
+                }
+            }
         }
 
         private bool _mouseWasDown = false;
@@ -99,16 +148,10 @@ namespace FoliageTool.Core
                     }
                     else
                     {
-                        foreach (var brush in _brushes)
-                        {
-                            brush.Refresh(_lastBounds);
-                        }
+                        EditorCoroutineUtility.StartCoroutine(Refresh(_lastBounds, _terrains), this);
                     }
                     
-                    foreach (var brush in _brushes)
-                    {
-                        brush.Refresh(bounds);
-                    }
+                    EditorCoroutineUtility.StartCoroutine(Refresh(bounds, _terrains), this);
                 }
 
             }

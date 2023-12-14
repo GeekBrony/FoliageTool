@@ -161,11 +161,16 @@ namespace FoliageTool.Core
         {
             foreach (FoliageTerrain t in terrains)
             {
-                yield return null;
                 if(!t)
                     continue;
 
-                yield return EditorCoroutineUtility.StartCoroutine(FoliageTerrain.Refresh(t), this);
+                Rect fullRect = new Rect(0, 0, 1, 1);
+                TerrainRegion region = new TerrainRegion(t.terrain, fullRect);
+                
+                yield return EditorCoroutineUtility.StartCoroutine(
+                    FoliageTerrain.Refresh(t, region), this);
+                
+                yield return null;
             }
         }
 

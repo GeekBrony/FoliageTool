@@ -8,6 +8,8 @@ namespace FoliageTool.Core
     /// </summary>
     public struct TerrainRegion
     {
+        public Terrain Terrain;
+        
         /// <summary>
         /// Normalized from [0 - 1]
         /// </summary>
@@ -42,6 +44,8 @@ namespace FoliageTool.Core
 
         public TerrainRegion(Terrain terrain, Rect rect)
         {
+            Terrain = terrain;
+            
             var data = terrain.terrainData;
             Vector3 terrainPos = terrain.GetPosition();
             

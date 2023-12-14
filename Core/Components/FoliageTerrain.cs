@@ -44,44 +44,8 @@ namespace FoliageTool.Core
         [MinMax(0, 1)] public Vector2 treeBlendRange = new(0.25f, 0.5f);
         [Range(0, 16)] public int treePadding = 4;
 
-        [Header("Other")]
-        [Tooltip(
-            "Past this resolution, the refresh action will divide the terrain into sections for refreshing. This only happens during full refreshes.")]
-        public int chunkedRefreshResolution = 256;
-
+        [Header("Advanced")]
         public FoliageRefreshOptions refreshOptions = new FoliageRefreshOptions();
-        
-        public static IEnumerator Refresh(FoliageTerrain component)
-        {
-            var terrain = component.terrain;
-            int divisions = math.clamp(terrain.terrainData.detailResolution / component.chunkedRefreshResolution, 1,
-                16);
-
-            int numTerrains = 0;
-            int terrainCount = divisions * divisions;
-            for (int x = 0; x < divisions; x++)
-            {
-                yield return null;
-                for (int y = 0; y < divisions; y++)
-                {
-#if UNITY_EDITOR
-                    float progress = (numTerrains + 1) / (float)terrainCount;
-                    EditorUtility.DisplayProgressBar("Planting foliage",
-                        $"Refreshing terrain \"{component.name}\" segment {numTerrains + 1}/{terrainCount}", progress);
-#endif
-                    Rect rect = new Rect(x / (float)divisions, y / (float)divisions, 1f / divisions, 1f / divisions);
-                    TerrainRegion region = new TerrainRegion(terrain, rect);
-
-                    // Refresh terrain per-segment.
-                    component.Refresh(region);
-
-                    numTerrains++;
-                }
-            }
-#if UNITY_EDITOR
-            EditorUtility.ClearProgressBar();
-#endif
-        }
 
         private void OnEnable()
         {
@@ -119,7 +83,7 @@ namespace FoliageTool.Core
             // if region is too big, don't refresh
             // reduces the calls to smaller chunks.
             float regionSize = rect.size.magnitude;
-            if (regionSize >= chunkedRefreshResolution / 4f)
+            if (regionSize >= refreshOptions.maxChunkResolution / 4f)
                 return;
 
             Refresh(region);
@@ -310,7 +274,66 @@ namespace FoliageTool.Core
 
             return treeMap;
         }
+        
+        public static TerrainRegion[,] SplitToRegions(TerrainRegion region, int maxResolution)
+        {
+            RectInt totalRegion = region.DetailRegion;
+            int widthDivision = math.clamp(totalRegion.width / maxResolution, 1, 16);
+            int heightDivision = math.clamp(totalRegion.height / maxResolution, 1, 16);
+            
+            TerrainRegion[,] regions = new TerrainRegion[widthDivision, heightDivision];
 
+            for (int x = 0; x < widthDivision; x++)
+            {
+                for (int y = 0; y < heightDivision; y++)
+                {
+                    Rect rect = new Rect(
+                        (x+region.Region.x) / (float)widthDivision,
+                        (y+region.Region.y) / (float)heightDivision,
+                        region.Region.width / widthDivision,
+                        region.Region.height / heightDivision);
+                    
+                    regions[x, y] = new TerrainRegion(region.Terrain, rect);
+                }
+            }
+
+            return regions;
+        }
+
+        public static IEnumerator Refresh(FoliageTerrain component, TerrainRegion region)
+        {
+            int maxRes = component.refreshOptions.maxChunkResolution;
+            TerrainRegion[,] regions = SplitToRegions(region, maxRes);
+            
+            int xLength = regions.GetLength(0);
+            int yLength = regions.GetLength(1);
+            
+            int num = 0;
+            int count = xLength * yLength;
+            
+            for (int x = 0; x < xLength; x++)
+            {
+                yield return null;
+                for (int y = 0; y < yLength; y++)
+                {
+                    yield return null;
+#if UNITY_EDITOR
+                    float progress = (num + 1) / (float)count;
+                    EditorUtility.DisplayProgressBar($"Refreshing foliage on terrain \"{component.name}\"",
+                        $"Processing chunk: {x+1},{y+1} ({num + 1}/{count})", progress);
+#endif
+                    
+                    TerrainRegion chunk = regions[x, y];
+                    component.Refresh(chunk);
+                    
+                    num++;
+                }
+            }
+#if UNITY_EDITOR
+            EditorUtility.ClearProgressBar();
+#endif
+        }
+        
         public void Refresh(TerrainRegion region)
         {
             // Flip the region coordinates XY -> YX
