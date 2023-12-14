@@ -86,7 +86,8 @@ namespace FoliageTool.Core
             if (regionSize >= refreshOptions.maxChunkResolution / 4f)
                 return;
 
-            Refresh(region);
+            Sync(out DetailPrototype[] detailPrototypes);
+            Refresh(region, detailPrototypes);
         }
 
         private void OnTextureChanged(Terrain t, string textureName, RectInt rect, bool isSync)
@@ -100,7 +101,8 @@ namespace FoliageTool.Core
             Rect normalized = rect.Normalize(Data.alphamapResolution);
             TerrainRegion region = new TerrainRegion(terrain, normalized);
 
-            Refresh(region);
+            Sync(out DetailPrototype[] detailPrototypes);
+            Refresh(region, detailPrototypes);
         }
 
         public BiomeAsset[] GetBiomes()
@@ -113,7 +115,7 @@ namespace FoliageTool.Core
             return biomes.ToArray();
         }
 
-        public void SyncFoliage(out DetailPrototype[] detailPrototypes)
+        public void Sync(out DetailPrototype[] detailPrototypes)
         {
             List<DetailPrototype> prototypes = new List<DetailPrototype>();
             foreach (BiomeAsset biomeAsset in GetBiomes())
@@ -303,6 +305,9 @@ namespace FoliageTool.Core
         public static IEnumerator Refresh(FoliageTerrain component, TerrainRegion region)
         {
             int maxRes = component.refreshOptions.maxChunkResolution;
+            
+            component.Sync(out DetailPrototype[] detailPrototypes);
+            
             TerrainRegion[,] regions = SplitToRegions(region, maxRes);
             
             int xLength = regions.GetLength(0);
@@ -313,18 +318,15 @@ namespace FoliageTool.Core
             
             for (int x = 0; x < xLength; x++)
             {
-                yield return null;
                 for (int y = 0; y < yLength; y++)
                 {
-                    yield return null;
 #if UNITY_EDITOR
                     float progress = (num + 1) / (float)count;
                     EditorUtility.DisplayProgressBar($"Refreshing foliage on terrain \"{component.name}\"",
                         $"Processing chunk: {x+1},{y+1} ({num + 1}/{count})", progress);
 #endif
-                    
                     TerrainRegion chunk = regions[x, y];
-                    component.Refresh(chunk);
+                    component.Refresh(chunk, detailPrototypes);
                     
                     num++;
                 }
@@ -332,18 +334,16 @@ namespace FoliageTool.Core
 #if UNITY_EDITOR
             EditorUtility.ClearProgressBar();
 #endif
+            yield return null;
         }
         
-        public void Refresh(TerrainRegion region)
+        public void Refresh(TerrainRegion region, DetailPrototype[] detailPrototypes)
         {
             // Flip the region coordinates XY -> YX
             region.FlipXY();
 
             RectInt alphaRegion = region.AlphaRegion;
             RectInt detailRegion = region.DetailRegion;
-
-            // sync all detail prototypes with the terrain
-            SyncFoliage(out DetailPrototype[] detailPrototypes);
 
             // get all maps
             float[,,] alphaMaps = Data.GetAlphamaps(alphaRegion.position, alphaRegion.size);
@@ -514,7 +514,9 @@ namespace FoliageTool.Core
                     {
                         Foliage foliage = brush.biome.GetFoliage(prototype);
                         if (foliage != null && !foliage.disable)
+                        {
                             density = EvaluateFoliage(foliage, i, position, alphaMaps);
+                        }
                     }
 
                     switch (brush.blendMode)
@@ -542,7 +544,7 @@ namespace FoliageTool.Core
         {
             RectInt detailRegion = region.DetailRegion;
 
-            SyncFoliage(out DetailPrototype[] foliage);
+            Sync(out DetailPrototype[] foliage);
 
             for (int i = 0; i < foliage.Length; ++i)
                 Data.SetDetailLayer(detailRegion.position, i, new int[detailRegion.width, detailRegion.height]);

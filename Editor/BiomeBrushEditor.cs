@@ -66,7 +66,8 @@ namespace FoliageTool.Core
                 if (region.DetailRegion.width <= t.refreshOptions.maxChunkResolution &&
                     region.DetailRegion.height <= t.refreshOptions.maxChunkResolution)
                 {
-                    t.Refresh(region);
+                    t.Sync(out DetailPrototype[] detailPrototypes);
+                    t.Refresh(region, detailPrototypes);
                     continue;
                 }
                 
@@ -90,7 +91,8 @@ namespace FoliageTool.Core
                     if (region.DetailRegion.width <= t.refreshOptions.maxChunkResolution &&
                         region.DetailRegion.height <= t.refreshOptions.maxChunkResolution)
                     {
-                        t.Refresh(region);
+                        t.Sync(out DetailPrototype[] detailPrototypes);
+                        t.Refresh(region, detailPrototypes);
                         continue;
                     }
                     

@@ -116,7 +116,7 @@ namespace FoliageTool.Core
                 {
                     if(!t) continue;
                     
-                    t.SyncFoliage(out DetailPrototype[] prototypes);
+                    t.Sync(out DetailPrototype[] prototypes);
                 }
                 
                 RefreshStats(terrains.ToArray());
@@ -169,8 +169,6 @@ namespace FoliageTool.Core
                 
                 yield return EditorCoroutineUtility.StartCoroutine(
                     FoliageTerrain.Refresh(t, region), this);
-                
-                yield return null;
             }
         }
 

@@ -190,8 +190,11 @@ namespace FoliageTool.Core
                 if(!CanRefresh(terrain))
                     continue;
                 
+                terrain.Sync(out DetailPrototype[] detailPrototypes);
+                
                 var region = TerrainRegion.FromBounds(terrain.terrain, bounds, 10);
-                terrain.Refresh(region);
+                // sync all detail prototypes with the terrain
+                terrain.Refresh(region, detailPrototypes);
             }
         }
         
