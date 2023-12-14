@@ -304,9 +304,9 @@ namespace FoliageTool.Core
 
         public static IEnumerator Refresh(FoliageTerrain component, TerrainRegion region)
         {
-            int maxRes = component.refreshOptions.maxChunkResolution;
-            
             component.Sync(out DetailPrototype[] detailPrototypes);
+            
+            int maxRes = component.refreshOptions.maxChunkResolution;
             
             TerrainRegion[,] regions = SplitToRegions(region, maxRes);
             
