@@ -154,19 +154,13 @@ namespace FoliageTool.Core
                     prototypes.Add(prototype);
                 }
             }
-
-            // Only remove all foliage on this terrain if lengths aren't equal.
-            if (Data.detailPrototypes.Length != prototypes.Count)
+            
+            for (int i = Data.detailPrototypes.Length - 1; i >= 0; i--)
             {
-                // BUG: On Modify Brush - All details removed outside of the brush
-                // This happens when Data.detailPrototypes.Length is not equal to prototypes.Count
-                // Primarily happens when a brush adds foliage that was not previously on the terrain
-                // TODO: Fix lol
-
-                for (int i = Data.detailPrototypes.Length - 1; i >= 0; i--)
-                {
-                    Data.RemoveDetailPrototype(i);
-                }
+                if(prototypes.Contains(Data.detailPrototypes[i])) 
+                    continue;
+                    
+                Data.RemoveDetailPrototype(i);
             }
 
             Data.detailPrototypes = prototypes.ToArray();
