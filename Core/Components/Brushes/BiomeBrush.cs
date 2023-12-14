@@ -178,11 +178,17 @@ namespace FoliageTool.Core
             }
         }
 
+        bool CanRefresh(FoliageTerrain terrain)
+        {
+            return terrain.refreshOptions.onSplineChanged
+                   && Intersects(terrain.terrain);
+        }
+
         public void Refresh(Bounds bounds)
         {
             foreach (FoliageTerrain terrain in FindObjectsOfType<FoliageTerrain>())
             {
-                if(!Intersects(terrain.terrain))
+                if(!CanRefresh(terrain))
                     continue;
                 
                 var region = TerrainRegion.FromBounds(terrain.terrain, bounds, 10);

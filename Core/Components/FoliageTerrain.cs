@@ -49,6 +49,8 @@ namespace FoliageTool.Core
             "Past this resolution, the refresh action will divide the terrain into sections for refreshing. This only happens during full refreshes.")]
         public int chunkedRefreshResolution = 256;
 
+        public FoliageRefreshOptions refreshOptions = new FoliageRefreshOptions();
+        
         public static IEnumerator Refresh(FoliageTerrain component)
         {
             var terrain = component.terrain;
@@ -107,10 +109,15 @@ namespace FoliageTool.Core
         {
             if (!isSync) return;
             if (t != terrain) return;
+            
+            if (!refreshOptions.onHeightmapChanged)
+                return;
 
             Rect normalized = rect.Normalize(Data.heightmapResolution);
             TerrainRegion region = new TerrainRegion(terrain, normalized);
 
+            // if region is too big, don't refresh
+            // reduces the calls to smaller chunks.
             float regionSize = rect.size.magnitude;
             if (regionSize >= chunkedRefreshResolution / 4f)
                 return;
@@ -122,6 +129,9 @@ namespace FoliageTool.Core
         {
             if (!isSync) return;
             if (t != terrain) return;
+            
+            if (!refreshOptions.onAlphamapChanged)
+                return;
 
             Rect normalized = rect.Normalize(Data.alphamapResolution);
             TerrainRegion region = new TerrainRegion(terrain, normalized);
