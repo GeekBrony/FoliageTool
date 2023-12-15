@@ -290,8 +290,8 @@ namespace FoliageTool.Core
                 for (int y = 0; y < heightDivision; y++)
                 {
                     Rect rect = new Rect(
-                        (x+region.Region.x) / (float)widthDivision,
-                        (y+region.Region.y) / (float)heightDivision,
+                        (x+region.Region.x) / widthDivision,
+                        (y+region.Region.y) / heightDivision,
                         region.Region.width / widthDivision,
                         region.Region.height / heightDivision);
                     
@@ -305,7 +305,6 @@ namespace FoliageTool.Core
         public static IEnumerator Refresh(FoliageTerrain component, TerrainRegion region)
         {
             component.Sync(out DetailPrototype[] detailPrototypes);
-            
             int maxRes = component.refreshOptions.maxChunkResolution;
             
             TerrainRegion[,] regions = SplitToRegions(region, maxRes);
@@ -313,22 +312,23 @@ namespace FoliageTool.Core
             int xLength = regions.GetLength(0);
             int yLength = regions.GetLength(1);
             
-            int num = 0;
+            int n = 0;
             int count = xLength * yLength;
             
             for (int x = 0; x < xLength; x++)
             {
                 for (int y = 0; y < yLength; y++)
                 {
-#if UNITY_EDITOR
-                    float progress = (num + 1) / (float)count;
-                    EditorUtility.DisplayProgressBar($"Refreshing foliage on terrain \"{component.name}\"",
-                        $"Processing chunk: {x+1},{y+1} ({num + 1}/{count})", progress);
-#endif
+                    n++;
                     TerrainRegion chunk = regions[x, y];
-                    component.Refresh(chunk, detailPrototypes);
                     
-                    num++;
+#if UNITY_EDITOR
+                    float progress = (n) / (float)count;
+                    EditorUtility.DisplayProgressBar($"Refreshing foliage on \"{component.name}\": {n}/{count}",
+                        $"Processing region: ({x}, {y}) {chunk.Region}", progress);
+#endif
+                    
+                    component.Refresh(chunk, detailPrototypes);
                 }
             }
 #if UNITY_EDITOR
