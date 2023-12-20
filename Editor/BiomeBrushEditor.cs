@@ -59,7 +59,8 @@ namespace FoliageTool.Core
         {
             foreach (FoliageTerrain t in terrains)
             {
-                if(!t) continue;
+                if(!t || !t.Intersects(bounds))
+                    continue;
 
                 var region = TerrainRegion.FromBounds(t.terrain, bounds, 10);
                     
@@ -70,9 +71,9 @@ namespace FoliageTool.Core
                     t.Refresh(region, detailPrototypes);
                     continue;
                 }
-                
-                yield return EditorCoroutineUtility.StartCoroutine(
-                    FoliageTerrain.Refresh(t, region), this);
+
+                IEnumerator refreshAction = FoliageTerrain.Refresh(t, region);
+                yield return EditorCoroutineUtility.StartCoroutine(refreshAction, this);
             }
             
             
@@ -86,6 +87,9 @@ namespace FoliageTool.Core
 
                 foreach (var brush in brushes)
                 {
+                    if(!brush.Intersects(t.terrain))
+                        continue;
+                    
                     var region = TerrainRegion.FromBounds(t.terrain, brush.GetBounds(), 10);
                     
                     if (region.DetailRegion.width <= t.refreshOptions.maxChunkResolution &&

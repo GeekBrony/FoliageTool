@@ -68,6 +68,23 @@ namespace FoliageTool.Core
             if (!terrain)
                 terrain = GetComponent<Terrain>();
         }
+        
+        /// <summary>
+        /// Get the world-mapped coordinates of the Terrain's bounds.
+        /// </summary>
+        public Bounds GetBounds()
+        {
+            Bounds b = Data.bounds;
+            return new Bounds(b.center + terrain.transform.position, b.size);
+        }
+
+        /// <summary>
+        /// Does a bounding box intersect with this terrain?
+        /// </summary>
+        public bool Intersects(Bounds bounds)
+        {
+            return GetBounds().Intersects(bounds);
+        }
 
         private void OnHeightChanged(Terrain t, RectInt rect, bool isSync)
         {
