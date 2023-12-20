@@ -1,6 +1,6 @@
 {
   "name": "team.poni.foliage-tool",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "displayName": "Foliage Tool",
   "description": "Artist-friendly procedural foliage generation tool for the Unity Editor.\nEnables rapid prototyping using a non-destructive foliage workflow.",
   "unity": "2022.3",
