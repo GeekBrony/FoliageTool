@@ -22,7 +22,9 @@ namespace FoliageTool.Core
         public abstract Bounds GetBounds();
 
         public abstract Bounds GetInnerBounds();
-
+        
+        protected abstract bool WillDrawDebugBounds();
+        
         /// <summary>
         /// Check if this brush intersects with a given terrain
         /// </summary>
@@ -46,6 +48,37 @@ namespace FoliageTool.Core
             
             return brushes.OrderBy(b=> b.drawOrder);
         }
+        
+        public static IEnumerable<T> GetBrushes<T>(Terrain terrain, bool unordered = false, bool includeInactive = false)
+            where T : Brush
+        {
+            return GetBrushes(terrain, unordered, includeInactive).OfType<T>();
+        }
+        
+        void OnDrawGizmosSelected()
+        {
+            if (WillDrawDebugBounds())
+            {
+                Bounds b = GetBounds();
+                b.size = new Vector3(b.size.x, 0, b.size.z);
+                Gizmos.DrawWireCube(b.center, b.size);
+                
+                Bounds ib = GetInnerBounds();
+                ib.size = new Vector3(ib.size.x, 0, ib.size.z);
+                Gizmos.DrawWireCube(ib.center, ib.size);
+            }
+            
+            DrawGizmosSelected();
+        }
+
+        /// <summary>
+        /// Virtual function - override to draw extra gizmos when this brush is selected.
+        /// </summary>
+        protected virtual void DrawGizmosSelected()
+        {
+            
+        }
+        
     }
 
 }

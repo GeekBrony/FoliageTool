@@ -47,7 +47,7 @@ namespace FoliageTool.Core
                 Terrain terrain = f.terrain;
                 TerrainData data = terrain.terrainData;
                     
-                foreach (var b in BiomeBrush.GetSplines(terrain, true).ToArray())
+                foreach (var b in Brush.GetBrushes<BiomeBrush>(terrain, true).ToArray())
                 {
                     if (brushes.Contains(b))
                         continue;
