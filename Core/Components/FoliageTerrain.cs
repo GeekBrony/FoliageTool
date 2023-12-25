@@ -124,7 +124,7 @@ namespace FoliageTool.Core
 
         public BiomeAsset[] GetBiomes()
         {
-            IEnumerable<BiomeBrush> splines = BiomeBrush.GetSplines(terrain);
+            IEnumerable<BiomeBrush> splines = Brush.GetBrushes<BiomeBrush>(terrain);
 
             List<BiomeAsset> biomes = new() { biome };
             biomes.AddRange(BiomeBrush.GetBiomes(splines));
@@ -426,13 +426,13 @@ namespace FoliageTool.Core
 
             if (evaluateBrushes)
             {
-                BiomeBrush[] brushes = BiomeBrush.GetSplines(terrain).ToArray();
+                BiomeBrush[] biomeBrushes = Brush.GetBrushes<BiomeBrush>(terrain).ToArray();
 
 #if FOLIAGE_DEBUG
             timer.Start();
 #endif
 
-                float[][,] biomeMasks = GetBiomeMasks(brushes, region);
+                float[][,] biomeMasks = GetBiomeMasks(biomeBrushes, region);
 
 #if FOLIAGE_DEBUG
             timer.Stop();
@@ -448,7 +448,7 @@ namespace FoliageTool.Core
                     {
                         // For each pixel, get position data
                         TerrainPosition position = new TerrainPosition(terrain, region, x, y);
-                        EvaluateBiomes(position, brushes, biomeMasks, detailPrototypes, detailMaps, alphaMaps);
+                        EvaluateBiomes(position, biomeBrushes, biomeMasks, detailPrototypes, detailMaps, alphaMaps);
                     }
                 }
 
