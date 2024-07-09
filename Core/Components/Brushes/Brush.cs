@@ -30,7 +30,7 @@ namespace FoliageTool.Core
         protected virtual void OnEnable()
         {
 #if UNITY_EDITOR
-            if (Application.isPlaying)
+            if(Application.isPlaying || !BrushEditing.CanRefreshBrushes())
                 return;
 
             ScheduleRefresh();
@@ -40,7 +40,7 @@ namespace FoliageTool.Core
         protected virtual void OnDisable()
         {
 #if UNITY_EDITOR
-            if (Application.isPlaying)
+            if(Application.isPlaying || !BrushEditing.CanRefreshBrushes())
                 return;
 
             ScheduleRefresh();
@@ -118,9 +118,7 @@ namespace FoliageTool.Core
                 return;
             
 #if UNITY_EDITOR
-            bool isUpdating = EditorApplication.isUpdating;
-            bool isCompiling = EditorApplication.isCompiling;
-            if(isUpdating || isCompiling)
+            if(!BrushEditing.CanRefreshBrushes())
                 return;
 #endif
             
