@@ -5,6 +5,7 @@ To install FoliageTool, you must be using **Unity 2022** (or newer).
 
 FoliageTool uses the following packages as dependencies. These should install automatically when you install FoliageTool.
 ```json
+"com.unity.modules.terrain": "1.0.0",
 "com.unity.mathematics": "1.2.6",
 "com.unity.splines": "2.4.0", 
 "com.unity.editorcoroutines": "1.0.0"
