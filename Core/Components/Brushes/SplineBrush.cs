@@ -3,6 +3,10 @@ using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Splines;
 
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
+
 namespace FoliageTool.Core
 {
     public abstract class SplineBrush : Brush
@@ -82,15 +86,75 @@ namespace FoliageTool.Core
             return math.saturate(dist) * (1 - falloff);
         }
         
-        private void OnValidate()
+        public float[,] GetMask(TerrainRegion region, bool evaluateFalloff)
+        {
+            Terrain terrain = region.Terrain;
+            RectInt detailRegion = region.DetailRegion;
+
+            int width = detailRegion.width;
+            int height = detailRegion.height;
+            float[,] map = new float[width, height];
+
+            TerrainRegion brushRegion = TerrainRegion.FromBounds(terrain, GetBounds());
+
+            // OPTIMIZATION: Only evaluate the mask if...
+            // 1. the brush is intersecting the current terrain.
+            bool terrainOverlap = Intersects(terrain);
+            // 2. the brush is overlapping the refreshing region.
+            bool regionOverlap = brushRegion.Region.Overlaps(region.Region);
+
+            bool isOverlapping = terrainOverlap && regionOverlap;
+            if (!isOverlapping || !enabled)
+                return map;
+
+            Polygon polygon = GetPolygon();
+            Bounds bounds = GetBounds();
+            Bounds innerBounds = GetInnerBounds();
+
+            for (int y = 0; y < height; y++)
+            {
+                for (int x = 0; x < width; x++)
+                {
+                    TerrainPosition pos = new TerrainPosition(terrain, region, x, y);
+                    Vector3 normalPos = new Vector3(pos.TerrainPosition2D.y, 0, pos.TerrainPosition2D.x);
+                    Vector3 worldPos = terrain.GetWorldPosition(normalPos);
+
+                    if (polygon.Contains(worldPos))
+                    {
+                        float fallOff = 1;
+                        if (evaluateFalloff)
+                            fallOff = CalculateFalloff(bounds, innerBounds, worldPos, polygon);
+
+                        map[x, y] = Mathf.Lerp(0, alpha, fallOff);
+                    }
+                }
+            }
+
+            return map;
+        }
+        
+        public override void Validate()
         {
             if (!spline)
             {
                 spline = GetComponent<SplineContainer>();
             }
+
+            ValidateSpline();
         }
 
-        protected abstract bool WillDrawDebugPolygon();
+        protected virtual void ValidateSpline()
+        {
+            
+        }
+        
+        protected override bool CanRefresh(FoliageTerrain terrain)
+        {
+            return terrain.refreshOptions.onSplineChanged
+                   && Intersects(terrain.terrain);
+        }
+
+        public abstract bool WillDrawDebugPolygon();
 
         protected override void DrawGizmosSelected()
         {
@@ -110,32 +174,6 @@ namespace FoliageTool.Core
             }
         }
         
-        bool CanRefresh(FoliageTerrain terrain)
-        {
-            return terrain.refreshOptions.onSplineChanged
-                   && Intersects(terrain.terrain);
-        }
-        
-        public void Refresh()
-        {
-            Bounds b = GetBounds();
-            Refresh(b);
-        }
-        
-        public void Refresh(Bounds bounds)
-        {
-            foreach (FoliageTerrain terrain in FindObjectsOfType<FoliageTerrain>())
-            {
-                if(!CanRefresh(terrain))
-                    continue;
-                
-                terrain.Sync(out DetailPrototype[] detailPrototypes);
-                
-                var region = TerrainRegion.FromBounds(terrain.terrain, bounds, 10);
-                // sync all detail prototypes with the terrain
-                terrain.Refresh(region, detailPrototypes);
-            }
-        }
 
         /*public void MovePivotToCenter()
         {

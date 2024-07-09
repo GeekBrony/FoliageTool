@@ -4,6 +4,7 @@ using System.Linq;
 using FoliageTool.Utils;
 using Unity.Mathematics;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 #if FOLIAGE_DEBUG
 using System.Diagnostics;
@@ -20,7 +21,8 @@ namespace FoliageTool.Core
     [ExecuteInEditMode]
     public class FoliageTerrain : MonoBehaviour
     {
-        [HideInInspector] public Terrain terrain;
+        [HideInInspector]
+        public Terrain terrain;
         private TerrainData Data => terrain.terrainData;
         public BiomeAsset biome;
 
@@ -45,13 +47,18 @@ namespace FoliageTool.Core
         [Range(0, 16)] public int treePadding = 4;
 
         [Header("Advanced")]
-        public FoliageRefreshOptions refreshOptions = new FoliageRefreshOptions();
+        public RefreshOptions refreshOptions = new RefreshOptions();
+
+        #region MonoBehaviour Lifecycle
 
         private void OnEnable()
         {
 #if UNITY_EDITOR
             TerrainCallbacks.textureChanged += OnTextureChanged;
             TerrainCallbacks.heightmapChanged += OnHeightChanged;
+
+            // pre-cache the bounds
+            _bounds = GetBounds();
 #endif
         }
 
@@ -68,6 +75,13 @@ namespace FoliageTool.Core
             if (!terrain)
                 terrain = GetComponent<Terrain>();
         }
+
+        #endregion
+        
+        /// <summary>
+        /// Cached bounds object.
+        /// </summary>
+        private Bounds _bounds;
         
         /// <summary>
         /// Get the world-mapped coordinates of the Terrain's bounds.
@@ -83,7 +97,7 @@ namespace FoliageTool.Core
         /// </summary>
         public bool Intersects(Bounds bounds)
         {
-            return GetBounds().Intersects(bounds);
+            return _bounds.Intersects(bounds);
         }
 
         private void OnHeightChanged(Terrain t, RectInt rect, bool isSync)
@@ -170,56 +184,10 @@ namespace FoliageTool.Core
             float[][,] brushMasks = new float[brushes.Length][,];
             for (int i = 0; i < brushMasks.Length; ++i)
             {
-                brushMasks[i] = GetBiomeMask(brushes[i], region);
+                brushMasks[i] = brushes[i].GetMask(region, evaluateBrushFalloff);
             }
 
             return brushMasks;
-        }
-
-        public float[,] GetBiomeMask(BiomeBrush brush, TerrainRegion region)
-        {
-            RectInt detailRegion = region.DetailRegion;
-
-            int width = detailRegion.width;
-            int height = detailRegion.height;
-            float[,] map = new float[width, height];
-
-            TerrainRegion brushRegion = TerrainRegion.FromBounds(terrain, brush.GetBounds());
-
-            // OPTIMIZATION: Only evaluate the mask if...
-            // 1. the brush is intersecting the current terrain.
-            bool terrainOverlap = brush.Intersects(terrain);
-            // 2. the brush is overlapping the refreshing region.
-            bool regionOverlap = brushRegion.Region.Overlaps(region.Region);
-
-            bool isOverlapping = terrainOverlap && regionOverlap;
-            if (!isOverlapping || !brush.enabled)
-                return map;
-
-            Polygon polygon = brush.GetPolygon();
-            Bounds bounds = brush.GetBounds();
-            Bounds innerBounds = brush.GetInnerBounds();
-
-            for (int y = 0; y < height; y++)
-            {
-                for (int x = 0; x < width; x++)
-                {
-                    TerrainPosition pos = new TerrainPosition(terrain, region, x, y);
-                    Vector3 normalPos = new Vector3(pos.TerrainPosition2D.y, 0, pos.TerrainPosition2D.x);
-                    Vector3 worldPos = terrain.GetWorldPosition(normalPos);
-
-                    if (polygon.Contains(worldPos))
-                    {
-                        float falloff = 1;
-                        if (evaluateBrushFalloff)
-                            falloff = brush.CalculateFalloff(bounds, innerBounds, worldPos, polygon);
-
-                        map[x, y] = Mathf.Lerp(0, brush.alpha, falloff);
-                    }
-                }
-            }
-
-            return map;
         }
 
         public float[,] BuildTreeMap(TerrainRegion region)
@@ -611,9 +579,7 @@ namespace FoliageTool.Core
             // Check if pos.x and pos.y are within the valid range
             Vector2Int len = new Vector2Int(alphas.GetLength(0), alphas.GetLength(1));
             if (pos.x < 0 || pos.x >= len.x || pos.y < 0 || pos.y >= len.y)
-            {
                 pos = pos.Clamp(0, 0, len.x - 1, len.y - 1);
-            }
 
             float d = 0;
             foreach (var r in rules)

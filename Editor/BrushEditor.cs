@@ -8,23 +8,24 @@ using UnityEngine;
 
 namespace FoliageTool.Core
 {
-    [CustomEditor(typeof(BiomeBrush)), CanEditMultipleObjects]
-    public class BiomeBrushEditor : Editor
+    [CustomEditor(typeof(Brush), true), CanEditMultipleObjects]
+    public class BrushEditor : Editor
     {
-        private BiomeBrush _biome;
-        private BiomeBrush[] _dragBrushes;
+        private Brush _brush;
+        private Brush[] _dragBrushes;
         private FoliageTerrain[] _terrains;
+        
         private void OnEnable()
         {
-            _biome = target as BiomeBrush;
-            if (!_biome)
+            _brush = target as Brush;
+            if (!_brush)
                 return;
             
-            _lastBounds = _biome.GetBounds();
+            _lastBounds = _brush.GetBounds();
             _terrains = FindObjectsOfType<FoliageTerrain>();
         }
         
-        private BiomeBrush[] _brushes;
+        private Brush[] _brushes;
         
         private static readonly string[] _dontIncludeMe = new string[]{"m_Script"};
         private bool IsPlaying => EditorApplication.isPlaying;
@@ -48,9 +49,12 @@ namespace FoliageTool.Core
             {
                 if (IsPlaying)
                     return;
-                
+
                 foreach (var brush in _brushes)
+                {
+                    brush.Validate();
                     brush.ScheduleRefresh();
+                }
             }
 
         }
@@ -79,7 +83,7 @@ namespace FoliageTool.Core
             
         }
         
-        IEnumerator Refresh(BiomeBrush[] brushes, params FoliageTerrain[] terrains)
+        IEnumerator Refresh(Brush[] brushes, params FoliageTerrain[] terrains)
         {
             foreach (FoliageTerrain t in terrains)
             {
@@ -87,6 +91,8 @@ namespace FoliageTool.Core
 
                 foreach (var brush in brushes)
                 {
+                    brush.Validate();
+                    
                     if(!brush.Intersects(t.terrain))
                         continue;
                     
@@ -126,7 +132,7 @@ namespace FoliageTool.Core
                 _lastBounds = GetBounds();
             }
 
-            if (_mouseWasDown && _brushes.Any(b => b.drawBounds))
+            if (_mouseWasDown && _brushes.Any(b => b.WillDrawDebugBounds()))
             {
                 Bounds bounds = GetBounds();
                 if (_lastBounds.Intersects(bounds))
@@ -148,6 +154,11 @@ namespace FoliageTool.Core
                 Bounds bounds = GetBounds();
                 if (bounds != _lastBounds)
                 {
+                    foreach (var brush in _brushes)
+                    {
+                        brush.Validate();
+                    }
+                    
                     if (_lastBounds.Intersects(bounds))
                     {
                         bounds.Encapsulate(_lastBounds);
@@ -165,26 +176,25 @@ namespace FoliageTool.Core
         }
 
 
-        BiomeBrush[] GetTargets()
+        Brush[] GetTargets()
         {
-            List<BiomeBrush> allSplines = new List<BiomeBrush>();
+            List<Brush> allBrushes = new List<Brush>();
             foreach (var o in targets)
             {
-                BiomeBrush s = o as BiomeBrush;
+                Brush s = o as Brush;
                 if(!s)
                     continue;
                     
-                allSplines.Add(s);
+                allBrushes.Add(s);
             }
-
-            return allSplines.OrderBy(s=> s.drawOrder).ToArray();
+            return allBrushes.OrderBy(s=> s.drawOrder).ToArray();
         }
 
         Bounds GetBounds()
         {
-            Bounds b = _biome.GetBounds();
+            Bounds b = _brush.GetBounds();
             
-            foreach (BiomeBrush brush in _brushes)
+            foreach (Brush brush in _brushes)
             {
                 if(!brush || !brush.enabled)
                     continue;
