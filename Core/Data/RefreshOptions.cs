@@ -4,7 +4,7 @@ using UnityEngine;
 namespace FoliageTool.Core
 {
     [Serializable]
-    public class FoliageRefreshOptions
+    public class RefreshOptions
     {
         [Tooltip("Using this max resolution, divide the terrain into chunks for refreshing.")]
         public int maxChunkResolution = 256;

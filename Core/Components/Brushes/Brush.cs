@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEditor;
 using UnityEngine;
 
 namespace FoliageTool.Core
@@ -23,8 +25,38 @@ namespace FoliageTool.Core
 
         public abstract Bounds GetInnerBounds();
         
-        protected abstract bool WillDrawDebugBounds();
+        public abstract bool WillDrawDebugBounds();
+
+        protected virtual void OnEnable()
+        {
+#if UNITY_EDITOR
+            if (Application.isPlaying)
+                return;
+
+            ScheduleRefresh();
+#endif
+        }
         
+        protected virtual void OnDisable()
+        {
+#if UNITY_EDITOR
+            if (Application.isPlaying)
+                return;
+
+            ScheduleRefresh();
+#endif
+        }
+
+        private void OnValidate()
+        {
+            Validate();
+        }
+
+        public virtual void Validate()
+        {
+            
+        }
+
         /// <summary>
         /// Check if this brush intersects with a given terrain
         /// </summary>
@@ -77,6 +109,61 @@ namespace FoliageTool.Core
         protected virtual void DrawGizmosSelected()
         {
             
+        }
+        
+        private bool _scheduleRefresh = false;
+        public void ScheduleRefresh()
+        {
+            if(_scheduleRefresh)
+                return;
+            
+#if UNITY_EDITOR
+            bool isUpdating = EditorApplication.isUpdating;
+            bool isCompiling = EditorApplication.isCompiling;
+            if(isUpdating || isCompiling)
+                return;
+#endif
+            
+            if (enabled)
+            {
+                _scheduleRefresh = true;
+                return;
+            }
+            
+            Refresh();
+        }
+        
+        void Update()
+        {
+            if (_scheduleRefresh)
+            {
+                _scheduleRefresh = false;
+                
+                Refresh();
+            }
+        }
+
+        protected abstract bool CanRefresh(FoliageTerrain terrain);
+        
+        public void Refresh()
+        {
+            Bounds b = GetBounds();
+            Refresh(b);
+        }
+        
+        public void Refresh(Bounds bounds)
+        {
+            foreach (FoliageTerrain terrain in FindObjectsOfType<FoliageTerrain>())
+            {
+                if(!CanRefresh(terrain))
+                    continue;
+                
+                terrain.Sync(out DetailPrototype[] detailPrototypes);
+                
+                var region = TerrainRegion.FromBounds(terrain.terrain, bounds, 10);
+                // sync all detail prototypes with the terrain
+                terrain.Refresh(region, detailPrototypes);
+            }
         }
         
     }

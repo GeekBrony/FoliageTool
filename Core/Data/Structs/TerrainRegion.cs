@@ -42,6 +42,8 @@ namespace FoliageTool.Core
         /// </summary>
         public RectInt HeightRegion;
 
+        public Bounds Bounds;
+
         public TerrainRegion(Terrain terrain, Rect rect)
         {
             Terrain = terrain;
@@ -58,6 +60,14 @@ namespace FoliageTool.Core
             AlphaRegion = Region.ScaleToInt(data.alphamapResolution);
             DetailRegion = Region.ScaleToInt(data.detailResolution);
             HeightRegion = Region.ScaleToInt(data.heightmapResolution);
+            
+            // Calculate the normalized coordinates within this terrain
+            Bounds = new Bounds(
+                new Vector3(WorldRegion.center.x, terrainPos.y, WorldRegion.center.y),
+                new Vector3(WorldRegion.size.x, data.size.y, WorldRegion.size.y)
+            );
+            
+             
         }
         
         public void FlipXY()

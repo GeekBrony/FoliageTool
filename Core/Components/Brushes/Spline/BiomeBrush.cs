@@ -19,68 +19,30 @@ namespace FoliageTool.Core
         public bool drawBounds = false;
         public bool drawPolygon = false;
         
-        private void OnEnable()
+        protected override void OnEnable()
         {
+            base.OnEnable();
+            
             if (biome)
                 biome.OnBiomeEdit += OnBiomeEdit;
-
-            ScheduleRefresh();
         }
 
-        private void OnDisable()
+        protected override void OnDisable()
         {
+            base.OnDisable();
+            
             if (biome)
                 biome.OnBiomeEdit -= OnBiomeEdit;
-            
-#if UNITY_EDITOR
-            if (Application.isPlaying)
-                return;
-
-            ScheduleRefresh();
-#endif
         }
 
         private void OnBiomeEdit()
         {
             Refresh();
         }
-
-        public void ScheduleRefresh()
-        {
-            if(_scheduleRefresh)
-                return;
-
-#if UNITY_EDITOR
-            bool isUpdating = EditorApplication.isUpdating;
-            bool isCompiling = EditorApplication.isCompiling;
-            if(isUpdating || isCompiling)
-                return;
-#endif
-            
-            if (enabled)
-            {
-                _scheduleRefresh = true;
-                return;
-            }
-            
-            Refresh();
-        }
-
-        private bool _scheduleRefresh = false;
-        void Update()
-        {
-            if (_scheduleRefresh)
-            {
-                _scheduleRefresh = false;
-                
-                Refresh();
-            }
-        }
         
         public static IEnumerable<BiomeAsset> GetBiomes(IEnumerable<BiomeBrush> splines)
         {
             List<BiomeAsset> biomes = new List<BiomeAsset>();
-
             foreach (var b in splines)
             {
                 if (!biomes.Contains(b.biome))
@@ -90,12 +52,12 @@ namespace FoliageTool.Core
             return biomes;
         }
 
-        protected override bool WillDrawDebugPolygon()
+        public override bool WillDrawDebugPolygon()
         {
             return drawPolygon;
         }
 
-        protected override bool WillDrawDebugBounds()
+        public override bool WillDrawDebugBounds()
         {
             return drawBounds;
         }
