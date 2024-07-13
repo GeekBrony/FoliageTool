@@ -10,24 +10,21 @@ namespace FoliageTool.Core
         static BrushEditing()
         {
             EditorApplication.playModeStateChanged += PlayStateChanged;
-            EditorApplication.update += OnUpdate;
+            EditorApplication.update += OnFirstFrame;
             _firstFrameUpdated = false;
         }
         
-        private static void OnUpdate()
+        private static void OnFirstFrame()
         {
-            if(!_firstFrameUpdated)
-                return;
-            
             _firstFrameUpdated = true;
+            EditorApplication.update -= OnFirstFrame;
         }
 
+        static PlayModeStateChange _playModeState;
         private static void PlayStateChanged(PlayModeStateChange state)
         {
             _playModeState = state;
         }
-
-        static PlayModeStateChange _playModeState;
         
         static bool IsChangingPlayMode()
         {
