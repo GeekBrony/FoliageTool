@@ -113,7 +113,6 @@ namespace FoliageTool.Core
         }
 
         private bool _mouseWasDown = false;
-        
         private Bounds _lastBounds;
         private void OnSceneGUI()
         {
@@ -125,16 +124,17 @@ namespace FoliageTool.Core
             bool isMouseUp = currentEvent.type == EventType.MouseUp && currentEvent.button == 0;
             bool isMouseLeft = currentEvent.type == EventType.MouseLeaveWindow;
 
+            Bounds bounds = GetBounds();
             if (isMouseDown)
             {
                 _mouseWasDown = true;
-                
                 _lastBounds = GetBounds();
             }
 
-            if (_mouseWasDown && _brushes.Any(b => b.WillDrawDebugBounds()))
+            if (_mouseWasDown &&
+                _brushes.Any(b => b.WillDrawDebugBounds()) &&
+                !bounds.Equals(_lastBounds))
             {
-                Bounds bounds = GetBounds();
                 if (_lastBounds.Intersects(bounds))
                 {
                     bounds.Encapsulate(_lastBounds);
@@ -143,7 +143,6 @@ namespace FoliageTool.Core
                 {
                     Handles.DrawWireCube(_lastBounds.center, _lastBounds.size);
                 }
-
                 Handles.DrawWireCube(bounds.center, bounds.size);
             }
             
@@ -151,7 +150,6 @@ namespace FoliageTool.Core
             {
                 _mouseWasDown = false;
                 
-                Bounds bounds = GetBounds();
                 if (bounds != _lastBounds)
                 {
                     foreach (var brush in _brushes)
