@@ -21,6 +21,7 @@ namespace FoliageTool.Core
         public float alpha = 1;
         
         private const float FMaxHeight = 10000;
+        
         public override Bounds GetBounds()
         {
             // this discards the polygon after it's done.
@@ -173,14 +174,5 @@ namespace FoliageTool.Core
                 }
             }
         }
-        
-
-        /*public void MovePivotToCenter()
-        {
-            foreach (var knot in spline.Spline.Knots)
-            {
-                knot.Position = 
-            }
-        }*/
     }
 }
