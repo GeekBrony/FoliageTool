@@ -5,6 +5,21 @@ This document assumes:
 - You've already [installed FoliageTool](Installing.md) into your Unity project.
 - The assets for your foliage are imported and ready to be used in Unity.
 
+## Before You Begin
+
+### What types of foliage are supported?
+FoliageTool is designed to be used with details such as grass, flowers, rocks, and other small details.
+
+However, you can use any prefab that is supported by Unity's [terrain details](https://docs.unity3d.com/Manual/terrain-Grass.html) system, with the following limitations:
+- The prefab must use a `MeshRenderer` component
+- The prefab must use a shader that supports GPU Instancing
+
+> **Note**: Unity uses a different rendering mechanism for trees, so they are not supported as a valid detail prefab.
+>
+> That said, support for procedurally spawning trees is on the roadmap for a future version, but in the meantime, you are encouraged to paint trees using Unity's [Terrain Inspector](https://docs.unity3d.com/Manual/terrain-Trees.html).
+
+## First Setup
+
 ### 1. Create your first Foliage Asset
 FoliageTool allows you to store foliage configurations as a `FoliageAsset`.
 
