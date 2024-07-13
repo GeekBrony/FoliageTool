@@ -43,7 +43,7 @@ namespace FoliageTool.Core
             if(Application.isPlaying || !BrushEditing.CanRefreshBrushes())
                 return;
 
-            ScheduleRefresh();
+            Refresh();
 #endif
         }
 
