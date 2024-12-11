@@ -35,10 +35,14 @@ namespace FoliageTool.Core
             serializedObject.Update();
             
             _brushes = GetTargets();
-            
-            if (GUILayout.Button("Refresh") && !IsPlaying)
+
+            if (!IsPlaying)
             {
-                EditorCoroutineUtility.StartCoroutine(Refresh(_brushes, _terrains), this);
+                if (GUILayout.Button("Refresh"))
+                {
+                    isManualRefresh = true;
+                    EditorCoroutineUtility.StartCoroutine(Refresh(_brushes, _terrains), this);
+                }
             }
             
             EditorGUI.BeginChangeCheck();
@@ -61,6 +65,9 @@ namespace FoliageTool.Core
         
         IEnumerator Refresh(Bounds bounds, params FoliageTerrain[] terrains)
         {
+            if (!BrushEditing.CanRefresh() && !isManualRefresh)
+                yield break;
+            
             foreach (FoliageTerrain t in terrains)
             {
                 if(!t || !t.Intersects(bounds))
@@ -80,11 +87,17 @@ namespace FoliageTool.Core
                 yield return EditorCoroutineUtility.StartCoroutine(refreshAction, this);
             }
             
-            
+            if(isManualRefresh)
+                isManualRefresh = false;
         }
+
+        private bool isManualRefresh = false;
         
         IEnumerator Refresh(Brush[] brushes, params FoliageTerrain[] terrains)
         {
+            if (!BrushEditing.CanRefresh() && !isManualRefresh)
+                yield break;
+            
             foreach (FoliageTerrain t in terrains)
             {
                 if(!t) continue;
@@ -110,6 +123,9 @@ namespace FoliageTool.Core
                         FoliageTerrain.Refresh(t, region), this);
                 }
             }
+            
+            if(isManualRefresh)
+                isManualRefresh = false;
         }
 
         private bool _mouseWasDown = false;
@@ -117,6 +133,9 @@ namespace FoliageTool.Core
         private void OnSceneGUI()
         {
             if (EditorApplication.isPlaying)
+                return;
+            
+            if (!BrushEditing.CanRefresh())
                 return;
             
             Event currentEvent = Event.current;

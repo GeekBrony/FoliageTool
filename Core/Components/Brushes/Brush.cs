@@ -9,7 +9,7 @@ namespace FoliageTool.Core
     /// <summary>
     /// An abstract class representing a brush that will be drawn on the terrain details.
     /// </summary>
-    [ExecuteInEditMode]
+    [ExecuteAlways]
     public abstract class Brush : MonoBehaviour
     {
         [Range(-32, 32)]
@@ -30,7 +30,7 @@ namespace FoliageTool.Core
         protected virtual void OnEnable()
         {
 #if UNITY_EDITOR
-            if(Application.isPlaying || !BrushEditing.CanRefreshBrushes())
+            if(Application.isPlaying || !BrushEditing.CanRefresh())
                 return;
 
             ScheduleRefresh();
@@ -40,7 +40,7 @@ namespace FoliageTool.Core
         protected virtual void OnDisable()
         {
 #if UNITY_EDITOR
-            if(Application.isPlaying || !BrushEditing.CanRefreshBrushes())
+            if(Application.isPlaying || !BrushEditing.CanRefresh())
                 return;
 
             Refresh();
@@ -118,7 +118,7 @@ namespace FoliageTool.Core
                 return;
             
 #if UNITY_EDITOR
-            if(!BrushEditing.CanRefreshBrushes())
+            if(!BrushEditing.CanRefresh())
                 return;
 #endif
             

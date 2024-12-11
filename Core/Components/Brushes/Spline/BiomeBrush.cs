@@ -8,7 +8,7 @@ using UnityEngine.Splines;
 
 namespace FoliageTool.Core
 {
-    [ExecuteInEditMode]
+    [ExecuteAlways]
     [RequireComponent(typeof(SplineContainer))]
     public class BiomeBrush : SplineBrush
     {

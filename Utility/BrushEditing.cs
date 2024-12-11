@@ -19,11 +19,24 @@ namespace FoliageTool.Core
             _firstFrameUpdated = true;
             EditorApplication.update -= OnFirstFrame;
         }
+        
+        public static bool Enabled { get; private set; } = false;
+        public static void Enable()
+        {
+            Enabled = true;
+        }
+        public static void Disable()
+        {
+            Enabled = false;
+        }
 
         static PlayModeStateChange _playModeState;
         private static void PlayStateChanged(PlayModeStateChange state)
         {
             _playModeState = state;
+            
+            if(Enabled && state == PlayModeStateChange.ExitingEditMode)
+                Disable();
         }
         
         static bool IsChangingPlayMode()
@@ -35,9 +48,10 @@ namespace FoliageTool.Core
                 _playModeState == PlayModeStateChange.ExitingPlayMode;
         }
 
-        public static bool CanRefreshBrushes()
+        public static bool CanRefresh()
         {
-            return !EditorApplication.isUpdating &&
+            return Enabled &&
+                   !EditorApplication.isUpdating &&
                    !EditorApplication.isCompiling &&
                    !IsChangingPlayMode() &&
                    _firstFrameUpdated;
