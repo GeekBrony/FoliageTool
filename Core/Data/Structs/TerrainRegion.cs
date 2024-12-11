@@ -47,9 +47,8 @@ namespace FoliageTool.Core
         public TerrainRegion(Terrain terrain, Rect rect)
         {
             Terrain = terrain;
-            
-            var data = terrain.terrainData;
-            Vector3 terrainPos = terrain.GetPosition();
+            var data = Terrain.terrainData;
+            Vector3 terrainPos = Terrain.GetPosition();
             
             Vector2 terrainPosition = new(terrainPos.x, terrainPos.z);
             Vector2 terrainSize = new(data.size.x, data.size.z);
@@ -66,8 +65,6 @@ namespace FoliageTool.Core
                 new Vector3(WorldRegion.center.x, terrainPos.y, WorldRegion.center.y),
                 new Vector3(WorldRegion.size.x, data.size.y, WorldRegion.size.y)
             );
-            
-             
         }
         
         public void FlipXY()

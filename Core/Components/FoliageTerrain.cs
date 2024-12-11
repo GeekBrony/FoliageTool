@@ -251,12 +251,13 @@ namespace FoliageTool.Core
                 bounds.Encapsulate(treeBounds);
             }
 
+            TerrainPosition positions = new TerrainPosition(terrain, region);
             // iterate through all the pixels in the bounds
             for (int y = 0; y < detailRegion.height; ++y)
             {
                 for (int x = 0; x < detailRegion.width; ++x)
                 {
-                    TerrainPosition positions = new TerrainPosition(terrain, region, x, y);
+                    positions.SetPosition(x, y);
                     Vector3 worldPos = terrain.GetWorldPosition(positions.TerrainPosition2D);
 
                     // OPTIMIZATION: only evaluate trees within the pre-calculated bounds
@@ -382,6 +383,7 @@ namespace FoliageTool.Core
         timer.Start();
 
 #endif
+            TerrainPosition position = new TerrainPosition(terrain, region);
             // Loop through all the pixels
             for (int y = 0; y < detailRegion.height; y++)
             {
@@ -389,7 +391,7 @@ namespace FoliageTool.Core
                 {
                     // For each pixel
                     // get position data
-                    TerrainPosition position = new TerrainPosition(terrain, region, x, y);
+                    position.SetPosition(x, y);
 
                     // Loop through all the detail maps
                     for (int i = 0; i < detailMaps.Length; ++i)
@@ -431,13 +433,14 @@ namespace FoliageTool.Core
             timer.Start();
 #endif
 
+                position = new TerrainPosition(terrain, region);
                 // Loop through all the pixels
                 for (int y = 0; y < detailRegion.height; y++)
                 {
                     for (int x = 0; x < detailRegion.width; x++)
                     {
+                        position.SetPosition(x, y);
                         // For each pixel, get position data
-                        TerrainPosition position = new TerrainPosition(terrain, region, x, y);
                         EvaluateBiomes(position, biomeBrushes, biomeMasks, detailPrototypes, detailMaps, alphaMaps);
                     }
                 }

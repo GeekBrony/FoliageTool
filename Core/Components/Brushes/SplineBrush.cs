@@ -112,11 +112,12 @@ namespace FoliageTool.Core
             Bounds bounds = GetBounds();
             Bounds innerBounds = GetInnerBounds();
 
+            TerrainPosition pos = new TerrainPosition(terrain, region);
             for (int y = 0; y < height; y++)
             {
                 for (int x = 0; x < width; x++)
                 {
-                    TerrainPosition pos = new TerrainPosition(terrain, region, x, y);
+                    pos.SetPosition(x, y);
                     Vector3 normalPos = new Vector3(pos.TerrainPosition2D.y, 0, pos.TerrainPosition2D.x);
                     Vector3 worldPos = terrain.GetWorldPosition(normalPos);
 
