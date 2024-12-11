@@ -56,8 +56,8 @@ After it bakes, you can safely remove FoliageTool from your terrain without losi
 ### What FoliageTool is not...
 - FoliageTool is ***not*** a real-time foliage generator.
     - It is only designed for use in the Unity Editor as a *step* in the level design process.
-- FoliageTool is ***not*** a procedural tree generator.
-    - Instead, it works with the existing trees on your terrain.
+- FoliageTool is ***not*** a procedural tree generator, nor will it spawn trees for you.
+    - Instead, it works with the existing trees that are painted on your terrain.
 - FoliageTool does ***not*** manage foliage instancing.
     - This task is best left to Unity or other instancing plugins.
 
