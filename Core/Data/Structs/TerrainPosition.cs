@@ -7,35 +7,51 @@ namespace FoliageTool.Core
     /// </summary>
     public struct TerrainPosition
     {
+        private Terrain Terrain { get; }
+        private TerrainRegion Region { get; }
+        
         /// <summary>
         /// 2D normalized REGION position
         /// </summary>
-        public Vector2 RegionPosition2D { get; }
+        public Vector2 RegionPosition2D { get; private set; }
         
         /// <summary>
         /// 2D normalized TERRAIN position
         /// </summary>
-        public Vector2 TerrainPosition2D { get; }
+        public Vector2 TerrainPosition2D { get; private set; }
         
         /// <summary>
         /// world position 2D: ZX
         /// </summary>
-        public Vector2 WorldPosition2D { get; }
+        public Vector2 WorldPosition2D { get; private set; }
         
-        public Vector3 WorldPosition3D { get; }
+        public Vector3 WorldPosition3D { get; private set; }
         
-        public Vector2Int DetailPosition { get; }
+        public Vector2Int DetailPosition { get; private set; }
 
-        public Vector2Int AlphaPosition { get; }
+        public Vector2Int AlphaPosition { get; private set; }
         
-        public Vector2Int HeightPosition { get; }
+        public Vector2Int HeightPosition { get; private set; }
         
-
-        public TerrainPosition(Terrain terrain, TerrainRegion region, int x, int y)
+        public TerrainPosition(Terrain terrain, TerrainRegion region)
         {
-            TerrainData data = terrain.terrainData;
-            var worldRegion = region.WorldRegion;
-            var detailRegion = region.DetailRegion;
+            Terrain = terrain;
+            Region = region;
+            
+            RegionPosition2D = default;
+            TerrainPosition2D = default;
+            WorldPosition2D = default;
+            WorldPosition3D = default;
+            DetailPosition = default;
+            AlphaPosition = default;
+            HeightPosition = default;
+        }
+
+        public void SetPosition(int x, int y)
+        {
+            TerrainData data = Terrain.terrainData;
+            var worldRegion = Region.WorldRegion;
+            var detailRegion = Region.DetailRegion;
             
             // position in detail space
             DetailPosition = new Vector2Int(x, y);

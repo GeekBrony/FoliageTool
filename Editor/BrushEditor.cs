@@ -35,10 +35,14 @@ namespace FoliageTool.Core
             serializedObject.Update();
             
             _brushes = GetTargets();
-            
-            if (GUILayout.Button("Refresh") && !IsPlaying)
+
+            if (!IsPlaying)
             {
-                EditorCoroutineUtility.StartCoroutine(Refresh(_brushes, _terrains), this);
+                if (GUILayout.Button("Refresh"))
+                {
+                    isManualRefresh = true;
+                    EditorCoroutineUtility.StartCoroutine(Refresh(_brushes, _terrains), this);
+                }
             }
             
             EditorGUI.BeginChangeCheck();
@@ -61,6 +65,9 @@ namespace FoliageTool.Core
         
         IEnumerator Refresh(Bounds bounds, params FoliageTerrain[] terrains)
         {
+            if (!BrushEditing.CanRefresh() && !isManualRefresh)
+                yield break;
+            
             foreach (FoliageTerrain t in terrains)
             {
                 if(!t || !t.Intersects(bounds))
@@ -80,11 +87,17 @@ namespace FoliageTool.Core
                 yield return EditorCoroutineUtility.StartCoroutine(refreshAction, this);
             }
             
-            
+            if(isManualRefresh)
+                isManualRefresh = false;
         }
+
+        private bool isManualRefresh = false;
         
         IEnumerator Refresh(Brush[] brushes, params FoliageTerrain[] terrains)
         {
+            if (!BrushEditing.CanRefresh() && !isManualRefresh)
+                yield break;
+            
             foreach (FoliageTerrain t in terrains)
             {
                 if(!t) continue;
@@ -110,14 +123,19 @@ namespace FoliageTool.Core
                         FoliageTerrain.Refresh(t, region), this);
                 }
             }
+            
+            if(isManualRefresh)
+                isManualRefresh = false;
         }
 
         private bool _mouseWasDown = false;
-        
         private Bounds _lastBounds;
         private void OnSceneGUI()
         {
             if (EditorApplication.isPlaying)
+                return;
+            
+            if (!BrushEditing.CanRefresh())
                 return;
             
             Event currentEvent = Event.current;
@@ -125,16 +143,17 @@ namespace FoliageTool.Core
             bool isMouseUp = currentEvent.type == EventType.MouseUp && currentEvent.button == 0;
             bool isMouseLeft = currentEvent.type == EventType.MouseLeaveWindow;
 
+            Bounds bounds = GetBounds();
             if (isMouseDown)
             {
                 _mouseWasDown = true;
-                
                 _lastBounds = GetBounds();
             }
 
-            if (_mouseWasDown && _brushes.Any(b => b.WillDrawDebugBounds()))
+            if (_mouseWasDown &&
+                _brushes.Any(b => b.WillDrawDebugBounds()) &&
+                !bounds.Equals(_lastBounds))
             {
-                Bounds bounds = GetBounds();
                 if (_lastBounds.Intersects(bounds))
                 {
                     bounds.Encapsulate(_lastBounds);
@@ -143,7 +162,6 @@ namespace FoliageTool.Core
                 {
                     Handles.DrawWireCube(_lastBounds.center, _lastBounds.size);
                 }
-
                 Handles.DrawWireCube(bounds.center, bounds.size);
             }
             
@@ -151,7 +169,6 @@ namespace FoliageTool.Core
             {
                 _mouseWasDown = false;
                 
-                Bounds bounds = GetBounds();
                 if (bounds != _lastBounds)
                 {
                     foreach (var brush in _brushes)

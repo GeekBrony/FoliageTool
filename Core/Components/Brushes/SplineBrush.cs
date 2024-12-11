@@ -21,6 +21,7 @@ namespace FoliageTool.Core
         public float alpha = 1;
         
         private const float FMaxHeight = 10000;
+        
         public override Bounds GetBounds()
         {
             // this discards the polygon after it's done.
@@ -111,11 +112,12 @@ namespace FoliageTool.Core
             Bounds bounds = GetBounds();
             Bounds innerBounds = GetInnerBounds();
 
+            TerrainPosition pos = new TerrainPosition(terrain, region);
             for (int y = 0; y < height; y++)
             {
                 for (int x = 0; x < width; x++)
                 {
-                    TerrainPosition pos = new TerrainPosition(terrain, region, x, y);
+                    pos.SetPosition(x, y);
                     Vector3 normalPos = new Vector3(pos.TerrainPosition2D.y, 0, pos.TerrainPosition2D.x);
                     Vector3 worldPos = terrain.GetWorldPosition(normalPos);
 
@@ -173,14 +175,5 @@ namespace FoliageTool.Core
                 }
             }
         }
-        
-
-        /*public void MovePivotToCenter()
-        {
-            foreach (var knot in spline.Spline.Knots)
-            {
-                knot.Position = 
-            }
-        }*/
     }
 }

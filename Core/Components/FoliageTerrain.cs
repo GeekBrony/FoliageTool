@@ -18,7 +18,7 @@ using UnityEditor;
 namespace FoliageTool.Core
 {
     [RequireComponent(typeof(Terrain))]
-    [ExecuteInEditMode]
+    [ExecuteAlways]
     public class FoliageTerrain : MonoBehaviour
     {
         [HideInInspector]
@@ -39,12 +39,16 @@ namespace FoliageTool.Core
             }
         }
 
-        [Header("Brushes")] public bool evaluateBrushes = true;
+        [Header("Brushes")]
+        public bool evaluateBrushes = true;
         public bool evaluateBrushFalloff = true;
 
-        [Header("Trees")] public bool evaluateTrees = true;
-        [MinMax(0, 1)] public Vector2 treeBlendRange = new(0.25f, 0.5f);
-        [Range(0, 16)] public int treePadding = 4;
+        [Header("Trees")]
+        public bool evaluateTrees = true;
+        [MinMax(0, 1)]
+        public Vector2 treeBlendRange = new(0.25f, 0.5f);
+        [Range(0, 16)]
+        public int treePadding = 4;
 
         [Header("Advanced")]
         public RefreshOptions refreshOptions = new RefreshOptions();
@@ -53,6 +57,8 @@ namespace FoliageTool.Core
 
         private void OnEnable()
         {
+            OnValidate();
+            
 #if UNITY_EDITOR
             TerrainCallbacks.textureChanged += OnTextureChanged;
             TerrainCallbacks.heightmapChanged += OnHeightChanged;
@@ -64,6 +70,8 @@ namespace FoliageTool.Core
 
         private void OnDisable()
         {
+            OnValidate();
+            
 #if UNITY_EDITOR
             TerrainCallbacks.textureChanged -= OnTextureChanged;
             TerrainCallbacks.heightmapChanged -= OnHeightChanged;
@@ -102,6 +110,11 @@ namespace FoliageTool.Core
 
         private void OnHeightChanged(Terrain t, RectInt rect, bool isSync)
         {
+#if UNITY_EDITOR
+            if(!BrushEditing.CanRefresh())
+                return;
+#endif
+            
             if (!isSync) return;
             if (t != terrain) return;
             
@@ -123,6 +136,11 @@ namespace FoliageTool.Core
 
         private void OnTextureChanged(Terrain t, string textureName, RectInt rect, bool isSync)
         {
+#if UNITY_EDITOR
+            if(!BrushEditing.CanRefresh())
+                return;
+#endif
+            
             if (!isSync) return;
             if (t != terrain) return;
             
@@ -140,7 +158,11 @@ namespace FoliageTool.Core
         {
             IEnumerable<BiomeBrush> splines = Brush.GetBrushes<BiomeBrush>(terrain);
 
-            List<BiomeAsset> biomes = new() { biome };
+            List<BiomeAsset> biomes = new List<BiomeAsset>();
+            
+            if (biome)
+                biomes.Add(biome);    
+            
             biomes.AddRange(BiomeBrush.GetBiomes(splines));
 
             return biomes.ToArray();
@@ -229,12 +251,13 @@ namespace FoliageTool.Core
                 bounds.Encapsulate(treeBounds);
             }
 
+            TerrainPosition positions = new TerrainPosition(terrain, region);
             // iterate through all the pixels in the bounds
             for (int y = 0; y < detailRegion.height; ++y)
             {
                 for (int x = 0; x < detailRegion.width; ++x)
                 {
-                    TerrainPosition positions = new TerrainPosition(terrain, region, x, y);
+                    positions.SetPosition(x, y);
                     Vector3 worldPos = terrain.GetWorldPosition(positions.TerrainPosition2D);
 
                     // OPTIMIZATION: only evaluate trees within the pre-calculated bounds
@@ -360,6 +383,7 @@ namespace FoliageTool.Core
         timer.Start();
 
 #endif
+            TerrainPosition position = new TerrainPosition(terrain, region);
             // Loop through all the pixels
             for (int y = 0; y < detailRegion.height; y++)
             {
@@ -367,7 +391,7 @@ namespace FoliageTool.Core
                 {
                     // For each pixel
                     // get position data
-                    TerrainPosition position = new TerrainPosition(terrain, region, x, y);
+                    position.SetPosition(x, y);
 
                     // Loop through all the detail maps
                     for (int i = 0; i < detailMaps.Length; ++i)
@@ -409,13 +433,14 @@ namespace FoliageTool.Core
             timer.Start();
 #endif
 
+                position = new TerrainPosition(terrain, region);
                 // Loop through all the pixels
                 for (int y = 0; y < detailRegion.height; y++)
                 {
                     for (int x = 0; x < detailRegion.width; x++)
                     {
+                        position.SetPosition(x, y);
                         // For each pixel, get position data
-                        TerrainPosition position = new TerrainPosition(terrain, region, x, y);
                         EvaluateBiomes(position, biomeBrushes, biomeMasks, detailPrototypes, detailMaps, alphaMaps);
                     }
                 }
