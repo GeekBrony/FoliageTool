@@ -5,7 +5,7 @@ namespace FoliageTool.Utils
     public static class RectExtensions
     {
         /// <summary>
-        /// Normalize a RectInt from 0 - 1 using a max value.
+        /// Normalize a RectInt from 0 to 1 using a max value.
         /// </summary>
         public static Rect Normalize(this RectInt rect, int max)
         {
@@ -13,7 +13,7 @@ namespace FoliageTool.Utils
         }
     
         /// <summary>
-        /// Normalize a Rect from 0 - 1 using a max value.
+        /// Normalize a Rect from 0 to 1 using a max value.
         /// </summary>
         public static Rect Normalize(this Rect rect, int max)
         {

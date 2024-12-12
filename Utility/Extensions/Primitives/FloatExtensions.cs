@@ -73,7 +73,7 @@ namespace FoliageTool.Utils
         }
         
         /// <summary>
-        /// Normalize the input from min to max, absolute value, then saturate the value from [0 - 1]
+        /// Normalize the input from min to max, absolute value, then saturate the value from 0 to 1
         /// </summary>
         public static float NormalAbsClamp(this float f, float min, float max)
         {
@@ -83,7 +83,7 @@ namespace FoliageTool.Utils
         }
 
         /// <summary>
-        /// Normalize the input, 0-1, from min to max, then clamp the value from min to max.
+        /// Normalize the input, remapping from min to max to the range of 0 to 1, then clamp the value from 0 to 1.
         /// </summary>
         public static float NormalizeClamp(this float f, float min, float max)
         {
