@@ -73,7 +73,13 @@ namespace FoliageTool.Core
 
         public static IEnumerable<Brush> GetBrushes(Terrain terrain, bool unordered = false, bool includeInactive = false)
         {
+#if UNITY_6000_0_OR_NEWER
+            IEnumerable<Brush> brushes = FindObjectsByType<Brush>(includeInactive ? 
+                FindObjectsInactive.Include : FindObjectsInactive.Exclude, FindObjectsSortMode.InstanceID);
+#else
             IEnumerable<Brush> brushes = FindObjectsOfType<Brush>(includeInactive);
+#endif
+            
             brushes = brushes.Where(b => b.Intersects(terrain));
             
             if (unordered) return brushes;
@@ -151,7 +157,13 @@ namespace FoliageTool.Core
         
         public void Refresh(Bounds bounds)
         {
-            foreach (FoliageTerrain terrain in FindObjectsOfType<FoliageTerrain>())
+#if UNITY_6000_0_OR_NEWER
+            IEnumerable<FoliageTerrain> terrains = FindObjectsByType<FoliageTerrain>(FindObjectsInactive.Exclude, FindObjectsSortMode.InstanceID);
+#else
+            IEnumerable<FoliageTerrain> terrains = FindObjectsOfType<FoliageTerrain>();
+#endif
+            
+            foreach (FoliageTerrain terrain in terrains)
             {
                 if(!CanRefresh(terrain))
                     continue;

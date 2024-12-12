@@ -22,7 +22,11 @@ namespace FoliageTool.Core
                 return;
             
             _lastBounds = _brush.GetBounds();
+            #if UNITY_6000_0_OR_NEWER
+            _terrains = FindObjectsByType<FoliageTerrain>(FindObjectsInactive.Exclude, FindObjectsSortMode.InstanceID);
+            #else
             _terrains = FindObjectsOfType<FoliageTerrain>();
+            #endif
         }
         
         private Brush[] _brushes;
